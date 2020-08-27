@@ -1,42 +1,93 @@
-#include <iostream>
-#include <array>
 #include <SFML/Graphics.hpp>
-#include "button.h"
-#include "menu.h"
-#include "world.h"
 
-// g++ -c *.cpp && g++ *.o -o sfml-app -lsfml-graphics -lsfml-window -lsfml-system && ./sfml-app
+class Game{
+private:
+  sf::RenderWindow mWindow;
+  sf::CircleShape mPlayer;
+  bool mIsMovingUp, mIsMovingDown, mIsMovingLeft, mIsMovingRight;
+  float PlayerSpeed;
+  sf::Time TimePerFrame;
+  void ProcessEvents();
+  void Update(sf::Time);
+  void Render();
+  void HandlePlayerInput(sf::Keyboard::Key, bool);
+public:
+  Game();
+  void Run();
+};
 
-int main()
-{
+int main(){
+  Game game;
+  game.Run();
+}
 
-    sf::RenderWindow window(sf::VideoMode(200, 200), "Test");
+Game::Game() : mWindow(sf::VideoMode(640,480), "SFML App"),
+               PlayerSpeed(150), mPlayer(),
+               TimePerFrame(sf::seconds(1.f / 60.f)){
+  mPlayer.setRadius(40.f);
+  mPlayer.setPosition(100.f, 100.f);
+  mPlayer.setFillColor(sf::Color::Cyan);
+}
 
-    window.setFramerateLimit(20);
+void Game::Run(){
 
-    World world;
+  sf::Clock clock;
+  sf::Time timeSinceLastUpdate = sf::Time::Zero;
 
-    while(window.isOpen()){
+  while(mWindow.isOpen()){
 
-      sf::Event event;
+    ProcessEvents();
 
-      while(window.pollEvent(event)){
-        if(event.type == sf::Event::Closed){
-          window.close();
-        }else if(event.type == sf::Event::KeyPressed){
-          if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
-            window.close();
-          }else{
-            world.Key();
-          }
-        }
-      }
+    timeSinceLastUpdate += clock.restart();
 
-      window.clear();
-      world.DrawOn(window);
-      window.display();
-
+    while(timeSinceLastUpdate > TimePerFrame){
+      timeSinceLastUpdate -= TimePerFrame;
+      ProcessEvents();
+      Update(TimePerFrame);
     }
 
-    return 0;
+    Render();
+  }
+}
+
+void Game::ProcessEvents(){
+  sf::Event event;
+  while(mWindow.pollEvent(event)){
+    switch(event.type){
+      case sf::Event::KeyPressed:
+        HandlePlayerInput(event.key.code,true); break;
+      case sf::Event::KeyReleased:
+        HandlePlayerInput(event.key.code,false); break;
+      case sf::Event::Closed:
+        mWindow.close(); break;
+    }
+  }
+}
+
+void Game::Update(sf::Time deltaTime){
+  sf::Vector2f mov(0.f,0.f);
+  if(mIsMovingUp){ mov.y -= PlayerSpeed; }
+  if(mIsMovingDown){ mov.y += PlayerSpeed; }
+  if(mIsMovingLeft){ mov.x -= PlayerSpeed; }
+  if(mIsMovingRight){ mov.x += PlayerSpeed; }
+
+  mPlayer.move(mov * deltaTime.asSeconds());
+}
+
+void Game::Render(){
+  mWindow.clear();
+  mWindow.draw(mPlayer);
+  mWindow.display();
+}
+
+void Game::HandlePlayerInput(sf::Keyboard::Key key, bool isPressed){
+  if(key == sf::Keyboard::W){
+    mIsMovingUp = isPressed;
+  }else if(key == sf::Keyboard::S){
+    mIsMovingDown = isPressed;
+  }else if(key == sf::Keyboard::A){
+    mIsMovingLeft = isPressed;
+  }else if(key == sf::Keyboard::D){
+    mIsMovingRight = isPressed;
+  }
 }
