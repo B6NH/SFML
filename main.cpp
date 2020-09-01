@@ -1,4 +1,12 @@
 #include <SFML/Graphics.hpp>
+#include "aircraft.h"
+#include "entity.h"
+#include "rsrc.h"
+#include "scenenode.h"
+
+namespace Textures{
+  enum ID { Landscape, Airplane, Missile };
+}
 
 class Game{
 private:
@@ -17,6 +25,8 @@ public:
 };
 
 int main(){
+  ResourceHolder<sf::Texture,Textures::ID> aaa;
+
   Game game;
   game.Run();
 }
