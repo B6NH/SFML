@@ -7,7 +7,7 @@
 class SceneNode : public sf::Transformable, public sf::Drawable, private sf::NonCopyable {
 public:
   typedef std::unique_ptr<SceneNode> Ptr;
-  SceneNode();
+  //SceneNode();
   void attachChild(Ptr);
   Ptr detachChild(const SceneNode &);
 private:

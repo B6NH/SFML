@@ -23,3 +23,9 @@ void SceneNode::draw(sf::RenderTarget & target,sf::RenderStates states) const{
     child->draw(target,states);
   }
 }
+
+void SceneNode::drawCurrent(sf::RenderTarget & target, sf::RenderStates states) const{
+  for(const Ptr & child : mChildren){
+    child->draw(target,states);
+  }
+}
