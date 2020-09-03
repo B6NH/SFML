@@ -1,17 +1,19 @@
 #include <SFML/Graphics.hpp>
 #include "../Header/game.h"
+#include "../Header/textures.h"
 
 Game::Game() :
-  mWindow(sf::VideoMode(640,480), "SFML App"), mPlayer(), mTexture(), PlayerSpeed(250.f),
+  mWindow(sf::VideoMode(640,480), "SFML App"), mPlayer(), mTextures(), PlayerSpeed(250.f),
   mIsMovingUp(false) ,mIsMovingDown(false), mIsMovingRight(false), mIsMovingLeft(false),
   TimePerFrame(sf::seconds(1.f/60.f)){
 
-  if(!mTexture.loadFromFile("Media/Textures/Eagle.png")){
-    // Error
-  }
+  mTextures.load(Textures::Airplane,"Media/Textures/Eagle.png");
+  mTextures.load(Textures::Desert,"Media/Textures/Desert.png");
 
-  mPlayer.setTexture(mTexture);
+  mPlayer.setTexture(mTextures.get(Textures::Airplane));
   mPlayer.setPosition(100.f,100.f);
+
+  mLandscape.setTexture(mTextures.get(Textures::Desert));
 
 }
 
@@ -65,6 +67,7 @@ void Game::update(sf::Time deltaTime){
 
 void Game::render(){
   mWindow.clear();
+  mWindow.draw(mLandscape);
   mWindow.draw(mPlayer);
   mWindow.display();
 }

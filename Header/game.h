@@ -1,5 +1,7 @@
 #ifndef GAME__H__
 #define GAME__H__
+#include "resource_holder.h"
+#include "textures.h"
 
 class Game{
 public:
@@ -12,10 +14,9 @@ private:
   void render();
 private:
   sf::RenderWindow mWindow;
-
-  sf::Texture mTexture;
+  ResourceHolder<sf::Texture,Textures::ID> mTextures;
   sf::Sprite mPlayer;
-
+  sf::Sprite mLandscape;
   sf::Time TimePerFrame;
   bool mIsMovingUp, mIsMovingDown, mIsMovingLeft, mIsMovingRight;
   float PlayerSpeed;
