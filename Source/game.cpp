@@ -2,18 +2,35 @@
 #include "../Header/game.h"
 
 Game::Game() :
-  mWindow(sf::VideoMode(640,480), "SFML App"), mPlayer(){
+  mWindow(sf::VideoMode(640,480), "SFML App"), mPlayer(), mTexture(), PlayerSpeed(250.f),
+  mIsMovingUp(false) ,mIsMovingDown(false), mIsMovingRight(false), mIsMovingLeft(false),
+  TimePerFrame(sf::seconds(1.f/60.f)){
 
-  mPlayer.setRadius(40.f);
+  if(!mTexture.loadFromFile("Media/Textures/Eagle.png")){
+    // Error
+  }
+
+  mPlayer.setTexture(mTexture);
   mPlayer.setPosition(100.f,100.f);
-  mPlayer.setFillColor(sf::Color::Cyan);
 
 }
 
 void Game::run(){
+
+  sf::Clock clock;
+  sf::Time timeSinceLastUpdate = sf::Time::Zero;
+
   while(mWindow.isOpen()){
+
     processEvents();
-    update();
+    timeSinceLastUpdate += clock.restart();
+
+    while(timeSinceLastUpdate > TimePerFrame){
+      timeSinceLastUpdate -= TimePerFrame;
+      processEvents();
+      update(TimePerFrame);
+    }
+
     render();
   }
 }
@@ -34,16 +51,16 @@ void Game::processEvents(){
   }
 }
 
-void Game::update(){
-  
+void Game::update(sf::Time deltaTime){
+
   sf::Vector2f movement(0.f,0.f);
 
-  if(mIsMovingUp) { movement.y -= 1.f; }
-  if(mIsMovingDown) { movement.y += 1.f; }
-  if(mIsMovingLeft) { movement.x -= 1.f; }
-  if(mIsMovingRight) { movement.x += 1.f; }
+  if(mIsMovingUp) { movement.y -= PlayerSpeed; }
+  if(mIsMovingDown) { movement.y += PlayerSpeed; }
+  if(mIsMovingLeft) { movement.x -= PlayerSpeed; }
+  if(mIsMovingRight) { movement.x += PlayerSpeed; }
 
-  mPlayer.move(movement);
+  mPlayer.move(movement * deltaTime.asSeconds());
 }
 
 void Game::render(){

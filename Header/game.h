@@ -8,12 +8,17 @@ public:
   void handlePlayerInput(sf::Keyboard::Key, bool);
 private:
   void processEvents();
-  void update();
+  void update(sf::Time);
   void render();
 private:
   sf::RenderWindow mWindow;
-  sf::CircleShape mPlayer;
+
+  sf::Texture mTexture;
+  sf::Sprite mPlayer;
+
+  sf::Time TimePerFrame;
   bool mIsMovingUp, mIsMovingDown, mIsMovingLeft, mIsMovingRight;
+  float PlayerSpeed;
 };
 
 #endif
