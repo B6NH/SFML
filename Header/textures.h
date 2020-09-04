@@ -6,6 +6,8 @@ namespace Textures{
 		Landscape,
 		Desert,
 		Airplane,
+		Eagle,
+		Raptor
 	};
 }
 
