@@ -10,6 +10,8 @@ public:
   void setVelocity(sf::Vector2f);
   void setVelocity(float, float);
   sf::Vector2f getVelocity() const;
+private:
+  virtual void updateCurrent(sf::Time);
 };
 
 #endif

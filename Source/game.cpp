@@ -3,18 +3,9 @@
 #include "../Header/textures.h"
 
 Game::Game() :
-  mWindow(sf::VideoMode(640,480), "SFML App"), mPlayer(), mTextures(), PlayerSpeed(250.f),
-  mIsMovingUp(false) ,mIsMovingDown(false), mIsMovingRight(false), mIsMovingLeft(false),
+  mWindow(sf::VideoMode(640,480), "SFML App"), mWorld(mWindow),
   TimePerFrame(sf::seconds(1.f/60.f)){
-
-  mTextures.load(Textures::Airplane,"Media/Textures/Eagle.png");
-  mTextures.load(Textures::Desert,"Media/Textures/Desert.png");
-
-  mPlayer.setTexture(mTextures.get(Textures::Airplane));
-  mPlayer.setPosition(100.f,100.f);
-
-  mLandscape.setTexture(mTextures.get(Textures::Desert));
-
+    //
 }
 
 void Game::run(){
@@ -54,32 +45,24 @@ void Game::processEvents(){
 }
 
 void Game::update(sf::Time deltaTime){
-
-  sf::Vector2f movement(0.f,0.f);
-
-  if(mIsMovingUp) { movement.y -= PlayerSpeed; }
-  if(mIsMovingDown) { movement.y += PlayerSpeed; }
-  if(mIsMovingLeft) { movement.x -= PlayerSpeed; }
-  if(mIsMovingRight) { movement.x += PlayerSpeed; }
-
-  mPlayer.move(movement * deltaTime.asSeconds());
+  mWorld.update(deltaTime);
 }
 
 void Game::render(){
   mWindow.clear();
-  mWindow.draw(mLandscape);
-  mWindow.draw(mPlayer);
+  mWorld.draw();
+  mWindow.setView(mWindow.getDefaultView());
   mWindow.display();
 }
 
 void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed){
-  if(key == sf::Keyboard::W){
-    mIsMovingUp = isPressed;
-  }else if(key == sf::Keyboard::S){
-    mIsMovingDown = isPressed;
-  }else if(key == sf::Keyboard::A){
-    mIsMovingLeft = isPressed;
-  }else if(key == sf::Keyboard::D){
-    mIsMovingRight = isPressed;
-  }
+  // if(key == sf::Keyboard::W){
+  //   mIsMovingUp = isPressed;
+  // }else if(key == sf::Keyboard::S){
+  //   mIsMovingDown = isPressed;
+  // }else if(key == sf::Keyboard::A){
+  //   mIsMovingLeft = isPressed;
+  // }else if(key == sf::Keyboard::D){
+  //   mIsMovingRight = isPressed;
+  // }
 }
