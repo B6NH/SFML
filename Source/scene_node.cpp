@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cassert>
+#include "../Header/category.h"
 #include "../Header/scene_node.h"
 
 SceneNode::SceneNode() : mChildren(), mParent(nullptr){
@@ -67,4 +68,12 @@ sf::Transform SceneNode::getWorldTransform() const{
 
 sf::Vector2f SceneNode::getWorldPosition() const{
   return getWorldTransform() * sf::Vector2f();
+}
+
+void SceneNode::onCommand(const Command& command, sf::Time dt){
+
+}
+
+unsigned int SceneNode::getCategory() const{
+  return Category::Scene;
 }

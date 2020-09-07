@@ -1,4 +1,5 @@
 #include "../Header/aircraft.h"
+#include "../Header/category.h"
 
 Textures::ID toTextureID(Aircraft::Type type){
 	switch(type){
@@ -18,4 +19,8 @@ Aircraft::Aircraft(Type type, const TextureHolder & textures) :
 
 void Aircraft::drawCurrent(sf::RenderTarget & target, sf::RenderStates states) const{
   target.draw(mSprite,states);
+}
+
+unsigned int Aircraft::getCategory() const{
+  return Category::Scene;
 }

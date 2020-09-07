@@ -58,6 +58,13 @@ void World::draw(){
 void World::update(sf::Time dt){
   mWorldView.move(0.f, mScrollSpeed * dt.asSeconds());
 
+
+
+  while (!mCommandQueue.isEmpty()){
+    mSceneGraph.onCommand(mCommandQueue.pop(), dt);
+  }
+
+
   sf::Vector2f position = mPlayerAircraft->getPosition();
   sf::Vector2f velocity = mPlayerAircraft->getVelocity();
 

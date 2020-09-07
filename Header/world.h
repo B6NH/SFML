@@ -2,6 +2,7 @@
 #define WORLD__H__
 #include <SFML/Graphics.hpp>
 #include "aircraft.h"
+#include "command_queue.h"
 #include "scene_node.h"
 #include "texture_holder.h"
 
@@ -27,6 +28,7 @@ private:
   sf::Vector2f mSpawnPosition;
   float mScrollSpeed;
   Aircraft * mPlayerAircraft;
+  CommandQueue mCommandQueue;
 };
 
 #endif

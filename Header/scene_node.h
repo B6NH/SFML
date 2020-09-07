@@ -4,6 +4,9 @@
 #include <memory>
 #include <vector>
 
+
+struct Command;
+
 class SceneNode : public sf::Transformable, public sf::Drawable, private sf::NonCopyable {
 public:
   typedef std::unique_ptr<SceneNode> Ptr;
@@ -14,6 +17,10 @@ public:
   void update(sf::Time);
   sf::Transform getWorldTransform() const;
   sf::Vector2f getWorldPosition() const;
+
+  void onCommand(const Command& command, sf::Time dt);
+  virtual unsigned int getCategory() const;
+
 private:
   std::vector<Ptr> mChildren;
   SceneNode * mParent;
