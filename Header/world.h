@@ -11,9 +11,12 @@ public:
   explicit World(sf::RenderWindow &);
   void update(sf::Time);
   void draw();
+  CommandQueue & getCommandQueue();
 private:
   void loadTextures();
   void buildScene();
+  void adaptPlayerPosition();
+  void adaptPlayerVelocity();
 private:
   enum Layer{
     Background, Air, LayerCount

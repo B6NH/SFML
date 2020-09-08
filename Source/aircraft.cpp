@@ -22,5 +22,11 @@ void Aircraft::drawCurrent(sf::RenderTarget & target, sf::RenderStates states) c
 }
 
 unsigned int Aircraft::getCategory() const{
-  return Category::Scene;
+	switch (mType){
+		case Eagle:
+			return Category::PlayerAircraft;
+
+		default:
+			return Category::EnemyAircraft;
+	}
 }

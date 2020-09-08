@@ -1,7 +1,9 @@
 #include <algorithm>
 #include <cassert>
 #include "../Header/category.h"
+#include "../Header/command.h"
 #include "../Header/scene_node.h"
+
 
 SceneNode::SceneNode() : mChildren(), mParent(nullptr){
   //
@@ -71,6 +73,14 @@ sf::Vector2f SceneNode::getWorldPosition() const{
 }
 
 void SceneNode::onCommand(const Command& command, sf::Time dt){
+
+	if (command.category & getCategory()){
+    command.action(*this, dt);
+  }
+
+	for(Ptr & child : mChildren){
+    child->onCommand(command, dt);
+  }
 
 }
 

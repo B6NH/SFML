@@ -5,7 +5,7 @@
 Game::Game() :
   mWindow(sf::VideoMode(640,480), "SFML App"), mWorld(mWindow),
   TimePerFrame(sf::seconds(1.f/60.f)){
-    //
+    mWindow.setKeyRepeatEnabled(false);
 }
 
 void Game::run(){
@@ -15,33 +15,35 @@ void Game::run(){
 
   while(mWindow.isOpen()){
 
-    processEvents();
+    processInput();
     timeSinceLastUpdate += clock.restart();
 
     while(timeSinceLastUpdate > TimePerFrame){
       timeSinceLastUpdate -= TimePerFrame;
-      processEvents();
+      processInput();
       update(TimePerFrame);
     }
 
     render();
   }
+
 }
 
-void Game::processEvents(){
+void Game::processInput(){
+
+  CommandQueue & commands = mWorld.getCommandQueue();
+
   sf::Event event;
+
   while(mWindow.pollEvent(event)){
+    mPlayer.handleEvent(event,commands);
 
-    switch(event.type){
-      case sf::Event::KeyPressed:
-        handlePlayerInput(event.key.code,true); break;
-      case sf::Event::KeyReleased:
-        handlePlayerInput(event.key.code,false); break;
-      case sf::Event::Closed:
-        mWindow.close(); break;
+    if(event.type == sf::Event::Closed){
+      mWindow.close();
     }
-
   }
+
+  mPlayer.handleRealtimeInput(commands);
 }
 
 void Game::update(sf::Time deltaTime){
@@ -53,16 +55,4 @@ void Game::render(){
   mWorld.draw();
   mWindow.setView(mWindow.getDefaultView());
   mWindow.display();
-}
-
-void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed){
-  // if(key == sf::Keyboard::W){
-  //   mIsMovingUp = isPressed;
-  // }else if(key == sf::Keyboard::S){
-  //   mIsMovingDown = isPressed;
-  // }else if(key == sf::Keyboard::A){
-  //   mIsMovingLeft = isPressed;
-  // }else if(key == sf::Keyboard::D){
-  //   mIsMovingRight = isPressed;
-  // }
 }
