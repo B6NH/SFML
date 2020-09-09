@@ -1,7 +1,7 @@
 #ifndef RESOURCE_HOLDER__H__
 #define RESOURCE_HOLDER__H__
 
-// #include <map>
+#include <map>
 // #include <string>
 // #include <memory>
 // #include <stdexcept>

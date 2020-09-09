@@ -4,7 +4,7 @@
 
 Game::Game() :
   mWindow(sf::VideoMode(640,480), "SFML App"), mWorld(mWindow),
-  TimePerFrame(sf::seconds(1.f/60.f)){
+  mPlayer(), TimePerFrame(sf::seconds(1.f/60.f)){
     mWindow.setKeyRepeatEnabled(false);
 }
 
