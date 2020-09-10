@@ -2,7 +2,7 @@
 #define GAME__H__
 #include "player.h"
 #include "resource_holder.h"
-#include "textures.h"
+#include "resource_identifiers.h"
 #include "world.h"
 
 class Game{

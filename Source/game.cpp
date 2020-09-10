@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "../Header/game.h"
-#include "../Header/textures.h"
+#include "../Header/resource_identifiers.h"
 
 Game::Game() :
   mWindow(sf::VideoMode(640,480), "SFML App"), mWorld(mWindow),
