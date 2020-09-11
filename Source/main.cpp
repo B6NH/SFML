@@ -3,6 +3,9 @@
 #include <stdexcept>
 #include <iostream>
 
+// g++ -c Source/*.cpp
+// g++ *.o -o sfml-app -lsfml-graphics -lsfml-window -lsfml-system
+
 int main(){
 
   try{

@@ -10,6 +10,8 @@
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
 
+
+// Initialize variables and state stack with context
 Application::Application() :
   mWindow(sf::VideoMode(640, 480), "States", sf::Style::Close), mTextures(), mFonts(),
   mPlayer(), mStateStack(State::Context(mWindow, mTextures, mFonts, mPlayer)),
@@ -25,7 +27,10 @@ Application::Application() :
 	mStatisticsText.setPosition(5.f, 5.f);
 	mStatisticsText.setCharacterSize(10u);
 
+  // Register all states with map and factory functions
 	registerStates();
+
+  // Push pending change to pending list vector
 	mStateStack.pushState(States::Title);
 }
 
@@ -91,6 +96,7 @@ void Application::updateStatistics(sf::Time dt){
 	}
 }
 
+// All states are registered in mFactories map of mStateStack
 void Application::registerStates(){
 	mStateStack.registerState<TitleState>(States::Title);
 	mStateStack.registerState<MenuState>(States::Menu);

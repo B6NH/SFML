@@ -53,6 +53,8 @@ private:
   std::map<States::ID,std::function<State::Ptr()>> mFactories;
 };
 
+
+// Create factory function for every registered state
 template <typename T>
 void StateStack::registerState(States::ID stateID){
 	mFactories[stateID] = [this] (){
