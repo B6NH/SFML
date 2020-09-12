@@ -13,8 +13,12 @@ namespace Textures{
 		Raptor,
 		Desert,
 		TitleScreen,
+		ButtonNormal,
+		ButtonSelected,
+		ButtonPressed
 	};
 }
+
 
 namespace Fonts{
 	enum ID{
