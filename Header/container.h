@@ -23,6 +23,7 @@ private:
   void selectNext();
   void selectPrevious();
 private:
+  // Vector of shared component pointers
   std::vector<Component::Ptr> mChildren;
   int mSelectedChild;
 };

@@ -12,15 +12,19 @@ mChildren(), mSelectedChild(-1){
   //
 }
 
+
+// Add components to container
 void Container::pack(Component::Ptr component){
 	mChildren.push_back(component);
 
+	// Select added component if nothing is selected
 	if (!hasSelection() && component->isSelectable()){
     select(mChildren.size() - 1);
   }
 
 }
 
+// Container is not selectable
 bool Container::isSelectable() const{
     return false;
 }
@@ -41,6 +45,7 @@ void Container::handleEvent(const sf::Event& event){
 	}
 }
 
+// Draw all container components
 void Container::draw(sf::RenderTarget& target, sf::RenderStates states) const{
   states.transform *= getTransform();
 
@@ -50,10 +55,13 @@ void Container::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 
 }
 
+// Component has selection if mSelectedChild index is greater than 0
 bool Container::hasSelection() const{
 	return mSelectedChild >= 0;
 }
 
+
+// Deselect old component, select new component and set selection index.
 void Container::select(std::size_t index){
 	if (mChildren[index]->isSelectable()){
 		if(hasSelection()){
@@ -65,6 +73,7 @@ void Container::select(std::size_t index){
 	}
 }
 
+// Select next selectable component
 void Container::selectNext(){
 	if (!hasSelection()){
     return;
@@ -78,6 +87,8 @@ void Container::selectNext(){
 	select(next);
 }
 
+
+// Select previous selectable component
 void Container::selectPrevious(){
 
 	if(!hasSelection()){

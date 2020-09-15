@@ -47,14 +47,21 @@ private:
     States::ID stateID;
   };
 private:
+
+	// Vector mStack contains unique pointers to state objects
   std::vector<State::Ptr> mStack;
+
+	// Changes that will be applied during stack update
   std::vector<PendingChange> mPendingList;
+
+	
   State::Context mContext;
   std::map<States::ID,std::function<State::Ptr()>> mFactories;
 };
 
 
-// Create factory function for every registered state
+// Create factory function for every registered state and assign it
+// to mFactories map
 template <typename T>
 void StateStack::registerState(States::ID stateID){
 	mFactories[stateID] = [this] (){

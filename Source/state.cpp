@@ -1,6 +1,8 @@
 #include "../Header/state.h"
 #include "../Header/state_stack.h"
 
+
+// Context contructor
 State::Context::Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, Player& player) :
   window(&window),textures(&textures),fonts(&fonts),
   player(&player){
@@ -16,18 +18,22 @@ State::~State(){
   //
 }
 
+// Request stack push from current state
 void State::requestStackPush(States::ID stateID){
 	mStack->pushState(stateID);
 }
 
+// Request stack pop from current state
 void State::requestStackPop(){
 	mStack->popState();
 }
 
+// Request stack clear from current state
 void State::requestStateClear(){
 	mStack->clearStates();
 }
 
+// Get current context
 State::Context State::getContext() const{
 	return mContext;
 }

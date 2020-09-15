@@ -7,12 +7,15 @@
 #include <SFML/Graphics/View.hpp>
 
 
+// Menu state with application context and GUI container
 MenuState::MenuState(StateStack& stack, Context context) :
   State(stack, context), mGUIContainer(){
 
+    // Set background sprite texture
     sf::Texture& texture = context.textures->get(Textures::TitleScreen);
   	mBackgroundSprite.setTexture(texture);
 
+    // Create play button
   	auto playButton = std::make_shared<GUI::Button>(*context.fonts, *context.textures);
   	playButton->setPosition(100, 250);
   	playButton->setText("Play");
@@ -21,6 +24,7 @@ MenuState::MenuState(StateStack& stack, Context context) :
   		requestStackPush(States::Game);
   	});
 
+    // Create settings button
   	auto settingsButton = std::make_shared<GUI::Button>(*context.fonts, *context.textures);
   	settingsButton->setPosition(100, 300);
   	settingsButton->setText("Settings");
@@ -28,6 +32,7 @@ MenuState::MenuState(StateStack& stack, Context context) :
   		requestStackPush(States::Settings);
   	});
 
+    // Create exit button
   	auto exitButton = std::make_shared<GUI::Button>(*context.fonts, *context.textures);
   	exitButton->setPosition(100, 350);
   	exitButton->setText("Exit");
@@ -40,12 +45,15 @@ MenuState::MenuState(StateStack& stack, Context context) :
   	mGUIContainer.pack(exitButton);
 }
 
+
+// Draw menu
 void MenuState::draw(){
 
   sf::RenderWindow& window = *getContext().window;
 
 	window.setView(window.getDefaultView());
 
+  // Draw background and container
 	window.draw(mBackgroundSprite);
 	window.draw(mGUIContainer);
 
@@ -55,6 +63,8 @@ bool MenuState::update(sf::Time){
 	return true;
 }
 
+
+// Handle events in menu container
 bool MenuState::handleEvent(const sf::Event& event){
   mGUIContainer.handleEvent(event);
 	return false;

@@ -31,27 +31,35 @@ void StateStack::handleEvent(const sf::Event& event){
       break;
     }
 	}
+
+  // Apply all stack changes from queue
 	applyPendingChanges();
 }
 
+// Push state change to queue of pending changes. It will be applied later.
 void StateStack::pushState(States::ID stateID){
 	mPendingList.push_back(PendingChange(Push, stateID));
 }
 
+// Push state change to queue of pending changes. It will be applied later.
 void StateStack::popState(){
 	mPendingList.push_back(PendingChange(Pop));
 }
 
+// Push state clear change to queue of pending changes. It will be applied later.
 void StateStack::clearStates(){
 	mPendingList.push_back(PendingChange(Clear));
 }
 
+// Check if state stack is empty
 bool StateStack::isEmpty() const{
 	return mStack.empty();
 }
 
 // Create state based on stateID
 State::Ptr StateStack::createState(States::ID stateID){
+
+  // Find element in mFactories map
 	auto found = mFactories.find(stateID);
 	assert(found != mFactories.end());
 
@@ -78,9 +86,12 @@ void StateStack::applyPendingChanges(){
 		}
 	}
 
+  // After processing all changes clear queue
 	mPendingList.clear();
 }
 
+
+// PendingChange constructor
 StateStack::PendingChange::PendingChange(Action action, States::ID stateID) :
   action(action), stateID(stateID){
     //

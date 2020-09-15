@@ -13,6 +13,9 @@ namespace sf{
 class StateStack;
 class Player;
 
+
+// State class represents different game states. It contains pointer to
+// state stack and application context with window, resources and player.
 class State{
 public:
   typedef std::unique_ptr<State> Ptr;
