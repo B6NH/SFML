@@ -13,7 +13,7 @@ mChildren(), mSelectedChild(-1){
 }
 
 
-// Add components to container
+// Add component to container
 void Container::pack(Component::Ptr component){
 	mChildren.push_back(component);
 
@@ -30,6 +30,9 @@ bool Container::isSelectable() const{
 }
 
 void Container::handleEvent(const sf::Event& event){
+
+	// If component is selected and active it should handle current event.
+	// Otherwise change selected(next, previous) component or activate it.
 	if(hasSelection() && mChildren[mSelectedChild]->isActive()){
 		mChildren[mSelectedChild]->handleEvent(event);
 	}else if (event.type == sf::Event::KeyReleased){

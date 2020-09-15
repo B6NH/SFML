@@ -7,7 +7,8 @@ StateStack::StateStack(State::Context context) :
     //
 }
 
-// Update states starting from end of vector
+// Update states starting from end of vector.
+// Stop updating next states if response is false.
 void StateStack::update(sf::Time dt){
 	for (auto itr = mStack.rbegin(); itr != mStack.rend(); ++itr){
 		if (!(*itr)->update(dt)){
@@ -24,7 +25,7 @@ void StateStack::draw(){
   }
 }
 
-// Stop handling event if response is false
+// Stop handling event if response is false.
 void StateStack::handleEvent(const sf::Event& event){
 	for (auto itr = mStack.rbegin(); itr != mStack.rend(); ++itr){
 		if (!(*itr)->handleEvent(event)){

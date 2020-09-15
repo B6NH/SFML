@@ -15,6 +15,10 @@ MenuState::MenuState(StateStack& stack, Context context) :
     sf::Texture& texture = context.textures->get(Textures::TitleScreen);
   	mBackgroundSprite.setTexture(texture);
 
+
+    // Create buttons and add their callbacks. Callbacks are variables of type
+    // std::function<void()>
+
     // Create play button
   	auto playButton = std::make_shared<GUI::Button>(*context.fonts, *context.textures);
   	playButton->setPosition(100, 250);

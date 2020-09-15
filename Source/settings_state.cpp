@@ -4,15 +4,19 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
-SettingsState::SettingsState(StateStack& stack, Context context) :
+
+
+SettingsState::SettingsState(StateStack & stack, Context context) :
 State(stack, context), mGUIContainer(){
 
+	// Set background texture.
 	mBackgroundSprite.setTexture(context.textures->get(Textures::TitleScreen));
 
-	addButtonLabel(Player::MoveLeft,  150.f, "Move Left", context);
+	// Add button labels
+	addButtonLabel(Player::MoveLeft, 150.f, "Move Left", context);
 	addButtonLabel(Player::MoveRight, 200.f, "Move Right", context);
-	addButtonLabel(Player::MoveUp,    250.f, "Move Up", context);
-	addButtonLabel(Player::MoveDown,  300.f, "Move Down", context);
+	addButtonLabel(Player::MoveUp, 250.f, "Move Up", context);
+	addButtonLabel(Player::MoveDown, 300.f, "Move Down", context);
 
 	updateLabels();
 
@@ -38,6 +42,7 @@ bool SettingsState::update(sf::Time){
 bool SettingsState::handleEvent(const sf::Event& event){
 	bool isKeyBinding = false;
 
+	// If button is active assign key to action, deactivate and break.
 	for (std::size_t action = 0; action < Player::ActionCount; ++action){
 		if (mBindingButtons[action]->isActive()){
 			isKeyBinding = true;
@@ -49,6 +54,7 @@ bool SettingsState::handleEvent(const sf::Event& event){
 		}
 	}
 
+	// Update labels if key was active. Otherwise, pass event to GUI container.
 	if(isKeyBinding){
     updateLabels();
   }else{
@@ -58,8 +64,9 @@ bool SettingsState::handleEvent(const sf::Event& event){
 	return false;
 }
 
+// Set key names in labels.
 void SettingsState::updateLabels(){
-	Player& player = *getContext().player;
+	Player & player = *getContext().player;
 
 	for (std::size_t i = 0; i < Player::ActionCount; ++i){
 		sf::Keyboard::Key key = player.getAssignedKey(static_cast<Player::Action>(i));
@@ -67,10 +74,13 @@ void SettingsState::updateLabels(){
 	}
 }
 
-void SettingsState::addButtonLabel(Player::Action action, float y, const std::string& text, Context context){
+// Create button for action.
+void SettingsState::addButtonLabel(Player::Action action, float y, const std::string & text, Context context){
 	mBindingButtons[action] = std::make_shared<GUI::Button>(*context.fonts, *context.textures);
 	mBindingButtons[action]->setPosition(80.f, y);
 	mBindingButtons[action]->setText(text);
+
+	// Button must be manually deactivated.
 	mBindingButtons[action]->setToggle(true);
 
 	mBindingLabels[action] = std::make_shared<GUI::Label>("", *context.fonts);

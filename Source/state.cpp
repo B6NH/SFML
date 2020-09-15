@@ -18,17 +18,20 @@ State::~State(){
   //
 }
 
-// Request stack push from current state
+
+
+
+// Request stack push from current state(add to queue)
 void State::requestStackPush(States::ID stateID){
 	mStack->pushState(stateID);
 }
 
-// Request stack pop from current state
+// Request stack pop from current state(add to queue)
 void State::requestStackPop(){
 	mStack->popState();
 }
 
-// Request stack clear from current state
+// Request stack clear from current state(add to queue)
 void State::requestStateClear(){
 	mStack->clearStates();
 }

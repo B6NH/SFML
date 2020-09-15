@@ -9,10 +9,10 @@
 namespace GUI{
 
 Button::Button(const FontHolder& fonts, const TextureHolder& textures) :
-mCallback(), mNormalTexture(textures.get(Textures::ButtonNormal)),
-mSelectedTexture(textures.get(Textures::ButtonSelected)),
-mPressedTexture(textures.get(Textures::ButtonPressed)), mSprite(),
-mText("", fonts.get(Fonts::Main), 16), mIsToggle(false){
+	mCallback(), mNormalTexture(textures.get(Textures::ButtonNormal)),
+	mSelectedTexture(textures.get(Textures::ButtonSelected)),
+	mPressedTexture(textures.get(Textures::ButtonPressed)), mSprite(),
+	mText("", fonts.get(Fonts::Main), 16), mIsToggle(false){
 
 	mSprite.setTexture(mNormalTexture);
 
@@ -38,18 +38,24 @@ bool Button::isSelectable() const{
     return true;
 }
 
+
+// Make button blue
 void Button::select(){
 	Component::select();
 
 	mSprite.setTexture(mSelectedTexture);
 }
 
+
+// Make button grey
 void Button::deselect(){
 	Component::deselect();
 
 	mSprite.setTexture(mNormalTexture);
 }
 
+
+// Button is pressed and activated
 void Button::activate(){
 
 	Component::activate();
@@ -63,12 +69,15 @@ void Button::activate(){
     mCallback();
   }
 
+	// If variable value is false deactivate button immediately.
 	if (!mIsToggle){
     deactivate();
   }
 
 }
 
+
+// Manually deactivate pressed button.
 void Button::deactivate(){
 	Component::deactivate();
 
@@ -85,6 +94,7 @@ void Button::handleEvent(const sf::Event&){
   //
 }
 
+// Draw button sprite and text.
 void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 	states.transform *= getTransform();
 	target.draw(mSprite, states);

@@ -22,8 +22,10 @@ void TitleState::draw(){
 	sf::RenderWindow& window = *getContext().window;
 	window.draw(mBackgroundSprite);
 
-	if (mShowText)
-		window.draw(mText);
+	if(mShowText){
+    window.draw(mText);
+  }
+
 }
 
 // Update variable to create blinking effect
@@ -39,7 +41,7 @@ bool TitleState::update(sf::Time dt){
 }
 
 
-// If any key was pressed pop this state and push menu state
+// If any key was pressed pop this state and push menu state to queue
 bool TitleState::handleEvent(const sf::Event& event){
 
   // Add requests to queue
