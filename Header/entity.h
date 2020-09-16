@@ -1,12 +1,22 @@
 #ifndef ENTITY__H__
 #define ENTITY__H__
-#include <SFML/Graphics.hpp>
+
+
 #include "scene_node.h"
 
 class Entity : public SceneNode{
 private:
   sf::Vector2f mVelocity;
+  int mHitpoints;
 public:
+
+  explicit Entity(int);
+  void repair(int);
+  void damage(int);
+  void destroy();
+  int getHitpoints() const;
+  bool isDestroyed() const;
+
   void setVelocity(sf::Vector2f);
   void setVelocity(float, float);
   sf::Vector2f getVelocity() const;

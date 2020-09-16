@@ -1,4 +1,11 @@
 #include "../Header/entity.h"
+#include <cassert>
+
+
+Entity::Entity(int hitpoints) :
+  mVelocity(), mHitpoints(hitpoints){
+    //
+}
 
 void Entity::setVelocity(sf::Vector2f velocity){
   mVelocity = velocity;
@@ -24,4 +31,27 @@ void Entity::accelerate(sf::Vector2f velocity){
 void Entity::accelerate(float vx, float vy){
 	mVelocity.x += vx;
 	mVelocity.y += vy;
+}
+
+
+void Entity::repair(int points){
+	assert(points > 0);
+	mHitpoints += points;
+}
+
+void Entity::damage(int points){
+	assert(points > 0);
+	mHitpoints -= points;
+}
+
+void Entity::destroy(){
+	mHitpoints = 0;
+}
+
+int Entity::getHitpoints() const{
+  return mHitpoints;
+}
+
+bool Entity::isDestroyed() const{
+  return 0 >= mHitpoints;
 }
