@@ -3,7 +3,18 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 
+#include <cassert>
 #include <cmath>
+#include <random>
+
+namespace{
+	std::default_random_engine createRandomEngine(){
+		auto seed = static_cast<unsigned long>(std::time(nullptr));
+		return std::default_random_engine(seed);
+	}
+
+	auto RandomEngine = createRandomEngine();
+}
 
 
 void centerOrigin(sf::Sprite& sprite){

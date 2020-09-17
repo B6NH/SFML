@@ -3,9 +3,16 @@
 #include "../Header/category.h"
 #include "../Header/command.h"
 #include "../Header/scene_node.h"
+#include "../Header/utility.h"
 
 
-SceneNode::SceneNode() : mChildren(), mParent(nullptr){
+#include "../Header/aircraft.h"
+#include <iostream>
+
+SceneNode::SceneNode(Category::Type category) :
+  mChildren(),
+  mParent(nullptr),
+  mDefaultCategory(category){
   //
 }
 
@@ -42,19 +49,18 @@ void SceneNode::drawChildren(sf::RenderTarget & target, sf::RenderStates states)
   }
 }
 
-void SceneNode::update(sf::Time dt){
-  updateCurrent(dt);
-  updateChildren(dt);
+void SceneNode::update(sf::Time dt, CommandQueue& commands){
+	updateCurrent(dt, commands);
+	updateChildren(dt, commands);
 }
 
-
-void SceneNode::updateCurrent(sf::Time dt){
-  //
+void SceneNode::updateCurrent(sf::Time, CommandQueue&){
+	// Do nothing by default
 }
 
-void SceneNode::updateChildren(sf::Time dt){
-  for(const Ptr & child : mChildren){
-    child->update(dt);
+void SceneNode::updateChildren(sf::Time dt, CommandQueue& commands){
+	for(Ptr& child : mChildren){
+    child->update(dt, commands);
   }
 }
 
@@ -85,5 +91,41 @@ void SceneNode::onCommand(const Command& command, sf::Time dt){
 }
 
 unsigned int SceneNode::getCategory() const{
-  return Category::Scene;
+  return mDefaultCategory;
+}
+
+sf::FloatRect SceneNode::getBoundingRect() const{
+	return sf::FloatRect();
+}
+
+void SceneNode::checkSceneCollision(SceneNode& sceneGraph, std::set<Pair>& collisionPairs){
+	checkNodeCollision(sceneGraph, collisionPairs);
+
+	for(Ptr& child : sceneGraph.mChildren){
+    checkSceneCollision(*child, collisionPairs);
+  }
+
+}
+
+void SceneNode::checkNodeCollision(SceneNode& node, std::set<Pair>& collisionPairs){
+	if (this != &node && collision(*this, node) && !isDestroyed() && !node.isDestroyed())
+		collisionPairs.insert(std::minmax(this, &node));
+
+	for(Ptr & child : mChildren){
+    child->checkNodeCollision(node, collisionPairs);
+  }
+
+}
+
+bool SceneNode::isDestroyed() const{
+	// By default, scene node needn't be removed
+	return false;
+}
+
+float distance(const SceneNode& lhs, const SceneNode& rhs){
+	return length(lhs.getWorldPosition() - rhs.getWorldPosition());
+}
+
+bool collision(const SceneNode& lhs, const SceneNode& rhs){
+	return lhs.getBoundingRect().intersects(rhs.getBoundingRect());
 }

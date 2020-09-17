@@ -20,7 +20,7 @@ sf::Vector2f Entity::getVelocity() const{
   return mVelocity;
 }
 
-void Entity::updateCurrent(sf::Time dt){
+void Entity::updateCurrent(sf::Time dt, CommandQueue&){
   move(mVelocity * dt.asSeconds());
 }
 

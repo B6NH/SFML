@@ -2,6 +2,7 @@
 #define UTILITY__H__
 
 #include <sstream>
+#include <SFML/System/Vector2.hpp>
 
 namespace sf{
 	class Sprite;

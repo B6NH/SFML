@@ -1,6 +1,7 @@
 #ifndef COMMAND__H__
 #define COMMAND__H__
 #include <functional>
+#include <cassert>
 #include <SFML/System/Time.hpp>
 
 class SceneNode;

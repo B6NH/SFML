@@ -2,15 +2,14 @@
 #include "../Header/category.h"
 #include "../Header/command_queue.h"
 #include "../Header/player.h"
-#include <iostream>
 
 struct AircraftMover{
 	AircraftMover(float vx, float vy) : velocity(vx, vy){
     //
   }
 
-	void operator() (Aircraft& aircraft, sf::Time) const{
-		aircraft.accelerate(velocity);
+	void operator() (Aircraft & aircraft, sf::Time) const{
+		aircraft.accelerate(velocity * aircraft.getMaxSpeed());
 	}
 
 	sf::Vector2f velocity;
@@ -19,12 +18,15 @@ struct AircraftMover{
 
 // Initialize player object. Bind keys to Action enums.
 // Initialize actions by binding Action enums to commands.
-Player::Player(){
+Player::Player() : mCurrentMissionStatus(MissionRunning){
 
 	mKeyBinding[sf::Keyboard::Left] = MoveLeft;
 	mKeyBinding[sf::Keyboard::Right] = MoveRight;
 	mKeyBinding[sf::Keyboard::Up] = MoveUp;
 	mKeyBinding[sf::Keyboard::Down] = MoveDown;
+	mKeyBinding[sf::Keyboard::Space] = Fire;
+	mKeyBinding[sf::Keyboard::M] = LaunchMissile;
+
 	initializeActions();
 
 	// Set all commands category to PlayerAircraft
@@ -35,6 +37,7 @@ Player::Player(){
 }
 
 void Player::handleEvent(const sf::Event & event, CommandQueue & commands){
+
 	if (event.type == sf::Event::KeyPressed){
 
 		// Find key binding
@@ -78,17 +81,28 @@ sf::Keyboard::Key Player::getAssignedKey(Action action) const{
 	return sf::Keyboard::Unknown;
 }
 
+void Player::setMissionStatus(MissionStatus status){
+	mCurrentMissionStatus = status;
+}
+
+Player::MissionStatus Player::getMissionStatus() const{
+	return mCurrentMissionStatus;
+}
+
 
 void Player::initializeActions(){
-	const float playerSpeed = 250.f;
 
 	// Set action functions of type std::function<void(SceneNode&,sf::Time)>.
 	// Functions are created with derivedAction template and functional object
 	// of type AircraftMover.
-	mActionBinding[MoveLeft].action = derivedAction<Aircraft>(AircraftMover(-playerSpeed, 0.f));
-	mActionBinding[MoveRight].action = derivedAction<Aircraft>(AircraftMover(+playerSpeed, 0.f));
-	mActionBinding[MoveUp].action = derivedAction<Aircraft>(AircraftMover(0.f, -playerSpeed));
-	mActionBinding[MoveDown].action = derivedAction<Aircraft>(AircraftMover(0.f, +playerSpeed));
+	mActionBinding[MoveLeft].action = derivedAction<Aircraft>(AircraftMover(-1, 0));
+	mActionBinding[MoveRight].action = derivedAction<Aircraft>(AircraftMover(+1, 0));
+	mActionBinding[MoveUp].action = derivedAction<Aircraft>(AircraftMover(0, -1));
+	mActionBinding[MoveDown].action = derivedAction<Aircraft>(AircraftMover(0, +1));
+
+	// Set fire and missile actions
+	mActionBinding[Fire].action = derivedAction<Aircraft>([] (Aircraft & a, sf::Time){ a.fire(); });
+	mActionBinding[LaunchMissile].action = derivedAction<Aircraft>([] (Aircraft & a, sf::Time){ a.launchMissile(); });
 }
 
 
@@ -98,6 +112,7 @@ bool Player::isRealtimeAction(Action action){
 		case MoveRight:
 		case MoveDown:
 		case MoveUp:
+		case Fire:
 			return true;
 
 		default:

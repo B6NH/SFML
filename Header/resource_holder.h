@@ -3,7 +3,7 @@
 
 #include <map>
 // #include <string>
-// #include <memory>
+#include <memory>
 // #include <stdexcept>
 #include <cassert>
 

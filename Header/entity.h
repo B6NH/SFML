@@ -3,6 +3,7 @@
 
 
 #include "scene_node.h"
+#include "command_queue.h"
 
 class Entity : public SceneNode{
 private:
@@ -22,8 +23,8 @@ public:
   sf::Vector2f getVelocity() const;
   void accelerate(sf::Vector2f velocity);
   void accelerate(float vx, float vy);
-private:
-  virtual void updateCurrent(sf::Time);
+protected:
+  virtual void updateCurrent(sf::Time dt, CommandQueue& commands);
 };
 
 #endif

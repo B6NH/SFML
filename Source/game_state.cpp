@@ -4,7 +4,7 @@
 // Call base constructor, initialize mWorld and mPlayer with render window and
 // player variables from context.
 GameState::GameState(StateStack& stack, Context context) :
-  State(stack, context), mWorld(*context.window), mPlayer(*context.player){
+  State(stack, context), mWorld(*context.window, *context.fonts), mPlayer(*context.player){
     //
 }
 
