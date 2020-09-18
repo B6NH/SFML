@@ -7,6 +7,7 @@
 #include "../Header/menu_state.h"
 #include "../Header/pause_state.h"
 #include "../Header/settings_state.h"
+#include "../Header/game_over_state.h"
 
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
@@ -16,7 +17,7 @@ const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
 // with textures and fonts, state stack holding game states, player object and
 // statistic variables
 Application::Application() :
-  mWindow(sf::VideoMode(640, 480), "States", sf::Style::Close), mTextures(), mFonts(),
+  mWindow(sf::VideoMode(1024, 768), "Gameplay", sf::Style::Close), mTextures(), mFonts(),
   mPlayer(), mStateStack(State::Context(mWindow, mTextures, mFonts, mPlayer)),
   mStatisticsText(), mStatisticsUpdateTime(), mStatisticsNumFrames(0){
 
@@ -134,4 +135,5 @@ void Application::registerStates(){
 	mStateStack.registerState<GameState>(States::Game);
 	mStateStack.registerState<PauseState>(States::Pause);
   mStateStack.registerState<SettingsState>(States::Settings);
+  mStateStack.registerState<GameOverState>(States::GameOver);
 }

@@ -2,6 +2,8 @@
 #include "../Header/state.h"
 #include "../Header/state_stack.h"
 
+#include <iostream>
+
 StateStack::StateStack(State::Context context) :
   mStack(), mPendingList(), mContext(context), mFactories(){
     //
@@ -62,6 +64,7 @@ State::Ptr StateStack::createState(States::ID stateID){
 
   // Find element in mFactories map
 	auto found = mFactories.find(stateID);
+
 	assert(found != mFactories.end());
 
   // Create state by calling factory function

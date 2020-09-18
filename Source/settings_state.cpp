@@ -5,7 +5,6 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 
-
 SettingsState::SettingsState(StateStack & stack, Context context) :
 State(stack, context), mGUIContainer(){
 
@@ -13,15 +12,18 @@ State(stack, context), mGUIContainer(){
 	mBackgroundSprite.setTexture(context.textures->get(Textures::TitleScreen));
 
 	// Add button labels
-	addButtonLabel(Player::MoveLeft, 150.f, "Move Left", context);
-	addButtonLabel(Player::MoveRight, 200.f, "Move Right", context);
-	addButtonLabel(Player::MoveUp, 250.f, "Move Up", context);
-	addButtonLabel(Player::MoveDown, 300.f, "Move Down", context);
+	addButtonLabel(Player::MoveLeft, 100.f, "Move Left", context);
+	addButtonLabel(Player::MoveRight,	150.f, "Move Right", context);
+	addButtonLabel(Player::MoveUp, 200.f, "Move Up", context);
+	addButtonLabel(Player::MoveDown, 250.f, "Move Down", context);
+	addButtonLabel(Player::Fire, 300.f, "Fire", context);
+	addButtonLabel(Player::LaunchMissile,	350.f, "Missile", context);
 
 	updateLabels();
 
 	auto backButton = std::make_shared<GUI::Button>(*context.fonts, *context.textures);
-	backButton->setPosition(80.f, 375.f);
+
+	backButton->setPosition(400.f, 300.f);
 	backButton->setText("Back");
 	backButton->setCallback(std::bind(&SettingsState::requestStackPop, this));
 
@@ -66,6 +68,7 @@ bool SettingsState::handleEvent(const sf::Event& event){
 
 // Set key names in labels.
 void SettingsState::updateLabels(){
+
 	Player & player = *getContext().player;
 
 	for (std::size_t i = 0; i < Player::ActionCount; ++i){
