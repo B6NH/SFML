@@ -99,14 +99,18 @@ sf::FloatRect SceneNode::getBoundingRect() const{
 }
 
 void SceneNode::checkSceneCollision(SceneNode& sceneGraph, std::set<Pair>& collisionPairs){
+
+  // Check scene collision with this node
 	checkNodeCollision(sceneGraph, collisionPairs);
 
+  // Check scene collision with other nodes
 	for(Ptr& child : sceneGraph.mChildren){
     checkSceneCollision(*child, collisionPairs);
   }
 
 }
 
+// Check collision with node
 void SceneNode::checkNodeCollision(SceneNode& node, std::set<Pair>& collisionPairs){
 	if (this != &node && collision(*this, node) && !isDestroyed() && !node.isDestroyed())
 		collisionPairs.insert(std::minmax(this, &node));
@@ -117,9 +121,24 @@ void SceneNode::checkNodeCollision(SceneNode& node, std::set<Pair>& collisionPai
 
 }
 
+bool SceneNode::isMarkedForRemoval() const{
+	return isDestroyed();
+}
+
 bool SceneNode::isDestroyed() const{
 	// By default, scene node needn't be removed
 	return false;
+}
+
+void SceneNode::removeWrecks(){
+
+	// Remove all children which request so
+	auto wreckfieldBegin = std::remove_if(mChildren.begin(), mChildren.end(), std::mem_fn(&SceneNode::isMarkedForRemoval));
+	mChildren.erase(wreckfieldBegin, mChildren.end());
+
+	// Call function recursively for all remaining children
+	std::for_each(mChildren.begin(), mChildren.end(), std::mem_fn(&SceneNode::removeWrecks));
+
 }
 
 float distance(const SceneNode& lhs, const SceneNode& rhs){

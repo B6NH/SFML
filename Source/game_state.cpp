@@ -18,7 +18,15 @@ void GameState::draw(){
 bool GameState::update(sf::Time dt){
 	mWorld.update(dt);
 
-	CommandQueue & commands = mWorld.getCommandQueue();
+	if(!mWorld.hasAlivePlayer()){
+		mPlayer.setMissionStatus(Player::MissionFailure);
+		requestStackPush(States::GameOver);
+	}else if(mWorld.hasPlayerReachedEnd()){
+		mPlayer.setMissionStatus(Player::MissionSuccess);
+		requestStackPush(States::GameOver);
+	}
+
+	CommandQueue& commands = mWorld.getCommandQueue();
 	mPlayer.handleRealtimeInput(commands);
 
 	return true;

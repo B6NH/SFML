@@ -145,6 +145,9 @@ void World::update(sf::Time dt){
 
 	mPlayerAircraft->setVelocity(0.f, 0.f);
 
+	destroyEntitiesOutsideView();
+	guideMissiles();
+
   // Push all commands through scene graph
 	while (!mCommandQueue.isEmpty()){
     mSceneGraph.onCommand(mCommandQueue.pop(), dt);
@@ -153,9 +156,13 @@ void World::update(sf::Time dt){
   // Adapt velocity for diagonal movement
 	adaptPlayerVelocity();
 
+	handleCollisions();
+
+	mSceneGraph.removeWrecks();
+	spawnEnemies();
+
   // Update scene graph
 	mSceneGraph.update(dt, mCommandQueue);
-	//mSceneGraph.update(dt);
 
   // Dont let player move outside view bounds
 	adaptPlayerPosition();
@@ -205,26 +212,34 @@ bool matchesCategories(SceneNode::Pair& colliders, Category::Type type1, Categor
 }
 
 void World::handleCollisions(){
+
+	// Find collision pairs with std::minmax
 	std::set<SceneNode::Pair> collisionPairs;
 	mSceneGraph.checkSceneCollision(mSceneGraph, collisionPairs);
 
+	// Handle all collisions. Swap pairs with matchesCategories if necessary.
 	for(SceneNode::Pair pair : collisionPairs){
+
 		if (matchesCategories(pair, Category::PlayerAircraft, Category::EnemyAircraft)){
+
+			// Player Enemy collision
 			auto& player = static_cast<Aircraft&>(*pair.first);
 			auto& enemy = static_cast<Aircraft&>(*pair.second);
-
-			// Collision: Player damage = enemy's remaining HP
 			player.damage(enemy.getHitpoints());
 			enemy.destroy();
+
 		}else if (matchesCategories(pair, Category::PlayerAircraft, Category::Pickup)){
+
+			// Player Pickup collision
       auto& player = static_cast<Aircraft&>(*pair.first);
 			auto& pickup = static_cast<Pickup&>(*pair.second);
-
-			// Apply pickup effect to player, destroy projectile
 			pickup.apply(player);
 			pickup.destroy();
+
 		}else if (matchesCategories(pair, Category::EnemyAircraft, Category::AlliedProjectile)
 			  || matchesCategories(pair, Category::PlayerAircraft, Category::EnemyProjectile)){
+
+			// Aircraft Projectile collision
 			auto& aircraft = static_cast<Aircraft&>(*pair.first);
 			auto& projectile = static_cast<Projectile&>(*pair.second);
 
@@ -292,4 +307,12 @@ sf::FloatRect World::getBattlefieldBounds() const{
 	bounds.height += 100.f;
 
 	return bounds;
+}
+
+bool World::hasAlivePlayer() const{
+	return !mPlayerAircraft->isMarkedForRemoval();
+}
+
+bool World::hasPlayerReachedEnd() const{
+	return !mWorldBounds.contains(mPlayerAircraft->getPosition());
 }
