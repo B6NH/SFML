@@ -7,6 +7,7 @@
 #include "../Header/projectile.h"
 #include "../Header/pickup.h"
 #include "../Header/text_node.h"
+#include "../Header/particle_node.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 
 // Initialize world object.
@@ -33,18 +34,11 @@ World::World(sf::RenderWindow& window, FontHolder& fonts)
 
 // Load textures for game objects and background
 void World::loadTextures(){
-	mTextures.load(Textures::Eagle, "Media/Textures/Eagle.png");
-	mTextures.load(Textures::Raptor, "Media/Textures/Raptor.png");
-	mTextures.load(Textures::Avenger, "Media/Textures/Avenger.png");
-	mTextures.load(Textures::Desert, "Media/Textures/Desert.png");
-
-	mTextures.load(Textures::Bullet, "Media/Textures/Bullet.png");
-	mTextures.load(Textures::Missile, "Media/Textures/Missile.png");
-
-	mTextures.load(Textures::HealthRefill, "Media/Textures/HealthRefill.png");
-	mTextures.load(Textures::MissileRefill, "Media/Textures/MissileRefill.png");
-	mTextures.load(Textures::FireSpread, "Media/Textures/FireSpread.png");
-	mTextures.load(Textures::FireRate, "Media/Textures/FireRate.png");
+	mTextures.load(Textures::Entities, "Media/Textures/Entities.png");
+	mTextures.load(Textures::Jungle, "Media/Textures/Jungle.png");
+	mTextures.load(Textures::Explosion, "Media/Textures/Explosion.png");
+	mTextures.load(Textures::Particle, "Media/Textures/Particle.png");
+	mTextures.load(Textures::FinishLine, "Media/Textures/FinishLine.png");
 }
 
 // Build game scene
@@ -52,7 +46,8 @@ void World::buildScene(){
 
 	// Initialize the different layers
 	for (std::size_t i = 0; i < LayerCount; ++i){
-		Category::Type category = (i == Air) ? Category::SceneAirLayer : Category::None;
+
+		Category::Type category = (i == LowerAir) ? Category::SceneAirLayer : Category::None;
 
 		SceneNode::Ptr layer(new SceneNode(category));
 		mSceneLayers[i] = layer.get();
@@ -60,21 +55,43 @@ void World::buildScene(){
 		mSceneGraph.attachChild(std::move(layer));
 	}
 
-	sf::Texture & texture = mTextures.get(Textures::Desert);
+	// Prepare the tiled background
+	sf::Texture& jungleTexture = mTextures.get(Textures::Jungle);
+	jungleTexture.setRepeated(true);
+
+	float viewHeight = mWorldView.getSize().y;
 	sf::IntRect textureRect(mWorldBounds);
-	texture.setRepeated(true);
+	textureRect.height += static_cast<int>(viewHeight);
 
-	std::unique_ptr<SpriteNode> backgroundSprite(new SpriteNode(texture, textureRect));
-	backgroundSprite->setPosition(mWorldBounds.left, mWorldBounds.top);
-	mSceneLayers[Background]->attachChild(std::move(backgroundSprite));
+	// Add the background sprite to the scene
+	std::unique_ptr<SpriteNode> jungleSprite(new SpriteNode(jungleTexture, textureRect));
+	jungleSprite->setPosition(mWorldBounds.left, mWorldBounds.top - viewHeight);
+	mSceneLayers[Background]->attachChild(std::move(jungleSprite));
 
+	// Add the finish line to the scene
+	sf::Texture& finishTexture = mTextures.get(Textures::FinishLine);
+	std::unique_ptr<SpriteNode> finishSprite(new SpriteNode(finishTexture));
+	finishSprite->setPosition(0.f, -76.f);
+	mSceneLayers[Background]->attachChild(std::move(finishSprite));
+
+	// Add particle node to the scene
+	std::unique_ptr<ParticleNode> smokeNode(new ParticleNode(Particle::Smoke, mTextures));
+	mSceneLayers[LowerAir]->attachChild(std::move(smokeNode));
+
+	// Add propellant particle node to the scene
+	std::unique_ptr<ParticleNode> propellantNode(new ParticleNode(Particle::Propellant, mTextures));
+	mSceneLayers[LowerAir]->attachChild(std::move(propellantNode));
+
+	// Add player's aircraft
 	std::unique_ptr<Aircraft> player(new Aircraft(Aircraft::Eagle, mTextures, mFonts));
 	mPlayerAircraft = player.get();
 	mPlayerAircraft->setPosition(mSpawnPosition);
-	mSceneLayers[Air]->attachChild(std::move(player));
+	mSceneLayers[UpperAir]->attachChild(std::move(player));
 
+	// Add enemy aircraft
 	addEnemies();
 }
+
 
 // Add enemies to spawn vector
 void World::addEnemies(){
@@ -114,7 +131,7 @@ void World::spawnEnemies(){
 		enemy->setRotation(180.f);
 
     // Add enemy aircraft to Air layer
-		mSceneLayers[Air]->attachChild(std::move(enemy));
+		mSceneLayers[UpperAir]->attachChild(std::move(enemy));
 
     // Delete spawn point
 		mEnemySpawnPoints.pop_back();

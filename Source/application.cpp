@@ -26,11 +26,9 @@ Application::Application() :
   mWindow.setFramerateLimit(60);
 
   // Load fonts and textures
-	mFonts.load(Fonts::Main, "Media/Sansation.ttf");
-	mTextures.load(Textures::TitleScreen, "Media/Textures/TitleScreen.png");
-  mTextures.load(Textures::ButtonNormal, "Media/Textures/ButtonNormal.png");
-	mTextures.load(Textures::ButtonSelected, "Media/Textures/ButtonSelected.png");
-	mTextures.load(Textures::ButtonPressed, "Media/Textures/ButtonPressed.png");
+  mFonts.load(Fonts::Main, 	"Media/Sansation.ttf");
+	mTextures.load(Textures::TitleScreen,	"Media/Textures/TitleScreen.png");
+	mTextures.load(Textures::Buttons,		"Media/Textures/Buttons.png");
 
   // Set statistic text
 	mStatisticsText.setFont(mFonts.get(Fonts::Main));

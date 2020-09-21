@@ -6,24 +6,36 @@ namespace sf{
 	class Font;
 }
 
+// namespace Textures{
+// 	enum ID{
+// 		Eagle,
+// 		Raptor,
+// 		Avenger,
+// 		Bullet,
+// 		Missile,
+// 		Desert,
+// 		HealthRefill,
+// 		MissileRefill,
+// 		FireSpread,
+// 		FireRate,
+// 		TitleScreen,
+// 		ButtonNormal,
+// 		ButtonSelected,
+// 		ButtonPressed
+// 	};
+// }
+
 namespace Textures{
 	enum ID{
-		Eagle,
-		Raptor,
-		Avenger,
-		Bullet,
-		Missile,
-		Desert,
-		HealthRefill,
-		MissileRefill,
-		FireSpread,
-		FireRate,
+		Entities,
+		Jungle,
 		TitleScreen,
-		ButtonNormal,
-		ButtonSelected,
-		ButtonPressed
+		Buttons,
+		Explosion,
+		Particle,
+		FinishLine
 	};
-}
+};
 
 
 namespace Fonts{

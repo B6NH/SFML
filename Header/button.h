@@ -20,6 +20,14 @@ class Button : public Component{
 public:
   typedef std::shared_ptr<Button> Ptr;
   typedef std::function<void()> Callback;
+
+  enum Type{
+    Normal,
+    Selected,
+    Pressed,
+    ButtonCount
+  };
+
 public:
   Button(const FontHolder &, const TextureHolder &);
   void setCallback(Callback);
@@ -33,11 +41,9 @@ public:
   virtual void handleEvent(const sf::Event &);
 private:
   virtual void draw(sf::RenderTarget &, sf::RenderStates) const;
+  void changeTexture(Type buttonType);
 private:
   Callback mCallback;
-  const sf::Texture & mNormalTexture;
-  const sf::Texture & mSelectedTexture;
-  const sf::Texture & mPressedTexture;
   sf::Sprite mSprite;
   sf::Text mText;
   bool mIsToggle;
