@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
-#include <set>
 #include "../Header/sprite_node.h"
 #include "../Header/world.h"
 #include "../Header/projectile.h"

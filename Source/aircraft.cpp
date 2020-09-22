@@ -257,14 +257,3 @@ void Aircraft::updateTexts(){
 		}
 	}
 }
-
-
-// Textures::ID toTextureID(Aircraft::Type type){
-// 	switch(type){
-// 		case Aircraft::Eagle:
-// 			return Textures::Eagle;
-// 		case Aircraft::Raptor:
-// 			return Textures::Raptor;
-// 	}
-// 	return Textures::Eagle;
-// }

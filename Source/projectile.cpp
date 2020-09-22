@@ -1,4 +1,5 @@
-#include "../Header/category.h"
+//#include "../Header/category.h"
+#include "../Header/emitter_node.h"
 #include "../Header/projectile.h"
 #include "../Header/data_tables.h"
 #include "../Header/utility.h"
@@ -18,9 +19,25 @@ namespace{
 Projectile::Projectile(Type type, const TextureHolder& textures)
 : Entity(1)
 , mType(type)
-, mSprite(textures.get(Table[type].texture))
+, mSprite(textures.get(Table[type].texture), Table[type].textureRect)
 , mTargetDirection(){
 	centerOrigin(mSprite);
+
+	// Add particle system if type is Missile
+	if (isGuided()){
+
+		// Add smoke
+		std::unique_ptr<EmitterNode> smoke(new EmitterNode(Particle::Smoke));
+		smoke->setPosition(0.f, getBoundingRect().height / 2.f);
+		attachChild(std::move(smoke));
+
+		// Add propellant
+		std::unique_ptr<EmitterNode> propellant(new EmitterNode(Particle::Propellant));
+		propellant->setPosition(0.f, getBoundingRect().height / 2.f);
+		attachChild(std::move(propellant));
+
+	}
+
 }
 
 // Set unit vector to target

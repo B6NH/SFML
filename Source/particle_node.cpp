@@ -43,8 +43,9 @@ unsigned int ParticleNode::getCategory() const{
 void ParticleNode::updateCurrent(sf::Time dt, CommandQueue&){
 
 	// Remove expired particles at beginning
-	while (!mParticles.empty() && mParticles.front().lifetime <= sf::Time::Zero)
+	while (!mParticles.empty() && mParticles.front().lifetime <= sf::Time::Zero){
 		mParticles.pop_front();
+	}
 
 	// Decrease lifetime of existing particles
 	for(Particle& particle : mParticles){
@@ -67,6 +68,8 @@ void ParticleNode::drawCurrent(sf::RenderTarget& target, sf::RenderStates states
 	target.draw(mVertexArray, states);
 }
 
+
+// Add vertex to mVertexArray
 void ParticleNode::addVertex(float worldX, float worldY, float texCoordX, float texCoordY, const sf::Color& color) const{
 
 	sf::Vertex vertex;
@@ -75,10 +78,12 @@ void ParticleNode::addVertex(float worldX, float worldY, float texCoordX, float 
 	vertex.color = color;
 
 	mVertexArray.append(vertex);
+
 }
 
 void ParticleNode::computeVertices() const{
 
+	// Full and half sizes of texture
 	sf::Vector2f size(mTexture.getSize());
 	sf::Vector2f half = size / 2.f;
 
@@ -89,12 +94,15 @@ void ParticleNode::computeVertices() const{
 		sf::Vector2f pos = particle.position;
 		sf::Color color = particle.color;
 
+		// Set particle transparency based on lifetime ratio
 		float ratio = particle.lifetime.asSeconds() / Table[mType].lifetime.asSeconds();
 		color.a = static_cast<sf::Uint8>(255 * std::max(ratio, 0.f));
 
-		addVertex(pos.x - half.x, pos.y - half.y, 0.f,    0.f,    color);
-		addVertex(pos.x + half.x, pos.y - half.y, size.x, 0.f,    color);
+		// Add 4 vertices for particle with arguments for target coordinates,
+		// texture coordinates and vertex color.
+		addVertex(pos.x - half.x, pos.y - half.y, 0.f, 0.f, color);
+		addVertex(pos.x + half.x, pos.y - half.y, size.x, 0.f, color);
 		addVertex(pos.x + half.x, pos.y + half.y, size.x, size.y, color);
-		addVertex(pos.x - half.x, pos.y + half.y, 0.f,    size.y, color);
+		addVertex(pos.x - half.x, pos.y + half.y, 0.f, size.y, color);
 	}
 }
