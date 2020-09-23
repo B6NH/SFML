@@ -6,6 +6,7 @@
 #include "resource_identifiers.h"
 #include "projectile.h"
 #include "text_node.h"
+#include "animation.h"
 
 #include <SFML/Graphics/Sprite.hpp>
 
@@ -22,6 +23,7 @@ class Aircraft : public Entity{
 		Aircraft(Type type, const TextureHolder & textures, const FontHolder & fonts);
 		virtual unsigned int getCategory() const;
 		virtual sf::FloatRect	getBoundingRect() const;
+		virtual void remove();
 		virtual bool isMarkedForRemoval() const;
 		bool isAllied() const;
 		float getMaxSpeed() const;
@@ -40,15 +42,18 @@ class Aircraft : public Entity{
 		void createProjectile(SceneNode& node, Projectile::Type type, float xOffset, float yOffset, const TextureHolder& textures) const;
 		void createPickup(SceneNode& node, const TextureHolder& textures) const;
 		void updateTexts();
+		void updateRollAnimation();
 	private:
 		Type mType;
 		sf::Sprite mSprite;
+		Animation mExplosion;
 		Command mFireCommand;
 		Command mMissileCommand;
 		sf::Time mFireCountdown;
 		bool mIsFiring;
 		bool mIsLaunchingMissile;
-		bool mIsMarkedForRemoval;
+		bool mShowExplosion;
+		bool mSpawnedPickup;
 		int mFireRateLevel;
 		int mSpreadLevel;
 		int mMissileAmmo;

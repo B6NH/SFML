@@ -142,7 +142,7 @@ void World::destroyEntitiesOutsideView(){
 	command.category = Category::Projectile | Category::EnemyAircraft;
 	command.action = derivedAction<Entity>([this] (Entity& e, sf::Time){
 		if (!getBattlefieldBounds().intersects(e.getBoundingRect()))
-			e.destroy();
+			e.remove();
 	});
 
 	mCommandQueue.push(command);
@@ -267,6 +267,7 @@ void World::handleCollisions(){
 }
 
 void World::guideMissiles(){
+
 	// Setup command that stores all enemies in mActiveEnemies
 	Command enemyCollector;
 	enemyCollector.category = Category::EnemyAircraft;

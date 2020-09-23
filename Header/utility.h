@@ -9,11 +9,14 @@ namespace sf{
 	class Text;
 }
 
-template <typename T>
-std::string toString(const T& value);
+class Animation;
 
-void centerOrigin(sf::Sprite& sprite);
-void centerOrigin(sf::Text& text);
+template <typename T>
+std::string toString(const T & value);
+
+void centerOrigin(sf::Sprite & sprite);
+void centerOrigin(sf::Text & text);
+void centerOrigin(Animation & animation);
 
 float toDegree(float radian);
 float toRadian(float degree);
