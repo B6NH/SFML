@@ -8,6 +8,7 @@
 #include "aircraft.h"
 #include "command_queue.h"
 #include "command.h"
+#include "bloom_effect.h"
 
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Graphics/View.hpp>
@@ -18,12 +19,12 @@
 
 
 namespace sf{
-	class RenderWindow;
+	class RenderTarget;
 }
 
 class World : private sf::NonCopyable{
 	public:
-		explicit World(sf::RenderWindow& window, FontHolder& fonts);
+		explicit World(sf::RenderTarget & outputTarget, FontHolder& fonts);
 		void update(sf::Time dt);
 		void draw();
 		CommandQueue & getCommandQueue();
@@ -65,7 +66,8 @@ class World : private sf::NonCopyable{
 
 
 	private:
-		sf::RenderWindow & mWindow;
+		sf::RenderTarget & mTarget;
+		sf::RenderTexture mSceneTexture;
 		sf::View mWorldView;
 		TextureHolder mTextures;
 		FontHolder & mFonts;
@@ -78,6 +80,7 @@ class World : private sf::NonCopyable{
 		Aircraft * mPlayerAircraft;
 		std::vector<SpawnPoint> mEnemySpawnPoints;
 		std::vector<Aircraft*> mActiveEnemies;
+		BloomEffect mBloomEffect;
 };
 
 

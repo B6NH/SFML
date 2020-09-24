@@ -7,22 +7,26 @@
 #include "../Header/pickup.h"
 #include "../Header/text_node.h"
 #include "../Header/particle_node.h"
-#include <SFML/Graphics/RenderWindow.hpp>
+#include "../Header/post_effect.h"
+#include <SFML/Graphics/RenderTarget.hpp>
 
 // Initialize world object.
-World::World(sf::RenderWindow& window, FontHolder& fonts)
-: mWindow(window)
-, mWorldView(window.getDefaultView())
+World::World(sf::RenderTarget & outputTarget, FontHolder & fonts)
+: mTarget(outputTarget)
+, mSceneTexture()
+, mWorldView(outputTarget.getDefaultView())
 , mFonts(fonts)
 , mTextures()
 , mSceneGraph()
 , mSceneLayers()
-, mWorldBounds(0.f, 0.f, mWorldView.getSize().x, 2000.f)
+, mWorldBounds(0.f, 0.f, mWorldView.getSize().x, 5000.f)
 , mSpawnPosition(mWorldView.getSize().x / 2.f, mWorldBounds.height - mWorldView.getSize().y / 2.f)
 , mScrollSpeed(-50.f)
 , mPlayerAircraft(nullptr)
 , mEnemySpawnPoints()
 , mActiveEnemies(){
+
+	mSceneTexture.create(mTarget.getSize().x, mTarget.getSize().y);
 
 	loadTextures();
 	buildScene();
@@ -97,12 +101,29 @@ void World::addEnemies(){
 
 	addEnemy(Aircraft::Raptor,    0.f,  500.f);
 	addEnemy(Aircraft::Raptor,    0.f, 1000.f);
-	addEnemy(Aircraft::Raptor, +100.f, 1100.f);
-	addEnemy(Aircraft::Raptor, -100.f, 1100.f);
-	addEnemy(Aircraft::Avenger, -70.f, 1400.f);
-	addEnemy(Aircraft::Avenger, -70.f, 1600.f);
-	addEnemy(Aircraft::Avenger,  70.f, 1400.f);
-	addEnemy(Aircraft::Avenger,  70.f, 1600.f);
+	addEnemy(Aircraft::Raptor, +100.f, 1150.f);
+	addEnemy(Aircraft::Raptor, -100.f, 1150.f);
+	addEnemy(Aircraft::Avenger,  70.f, 1500.f);
+	addEnemy(Aircraft::Avenger, -70.f, 1500.f);
+	addEnemy(Aircraft::Avenger, -70.f, 1710.f);
+	addEnemy(Aircraft::Avenger,  70.f, 1700.f);
+	addEnemy(Aircraft::Avenger,  30.f, 1850.f);
+	addEnemy(Aircraft::Raptor,  300.f, 2200.f);
+	addEnemy(Aircraft::Raptor, -300.f, 2200.f);
+	addEnemy(Aircraft::Raptor,    0.f, 2200.f);
+	addEnemy(Aircraft::Raptor,    0.f, 2500.f);
+	addEnemy(Aircraft::Avenger,-300.f, 2700.f);
+	addEnemy(Aircraft::Avenger,-300.f, 2700.f);
+	addEnemy(Aircraft::Raptor,    0.f, 3000.f);
+	addEnemy(Aircraft::Raptor,  250.f, 3250.f);
+	addEnemy(Aircraft::Raptor, -250.f, 3250.f);
+	addEnemy(Aircraft::Avenger,   0.f, 3500.f);
+	addEnemy(Aircraft::Avenger,   0.f, 3700.f);
+	addEnemy(Aircraft::Raptor,    0.f, 3800.f);
+	addEnemy(Aircraft::Avenger,   0.f, 4000.f);
+	addEnemy(Aircraft::Avenger,-200.f, 4200.f);
+	addEnemy(Aircraft::Raptor,  200.f, 4200.f);
+	addEnemy(Aircraft::Raptor,    0.f, 4400.f);
 
   // Sort spawn points in vector. Back of vector is at the bottom.
 	std::sort(mEnemySpawnPoints.begin(), mEnemySpawnPoints.end(), [] (SpawnPoint lhs, SpawnPoint rhs){
@@ -150,8 +171,18 @@ void World::destroyEntitiesOutsideView(){
 
 // Draw world scene graph
 void World::draw(){
-  mWindow.setView(mWorldView);
-  mWindow.draw(mSceneGraph);
+
+	if (PostEffect::isSupported()){
+		mSceneTexture.clear();
+		mSceneTexture.setView(mWorldView);
+		mSceneTexture.draw(mSceneGraph);
+		mSceneTexture.display();
+		mBloomEffect.apply(mSceneTexture, mTarget);
+	}else{
+		mTarget.setView(mWorldView);
+		mTarget.draw(mSceneGraph);
+	}
+
 }
 
 void World::update(sf::Time dt){

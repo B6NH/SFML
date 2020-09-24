@@ -4,26 +4,8 @@
 namespace sf{
 	class Texture;
 	class Font;
+	class Shader;
 }
-
-// namespace Textures{
-// 	enum ID{
-// 		Eagle,
-// 		Raptor,
-// 		Avenger,
-// 		Bullet,
-// 		Missile,
-// 		Desert,
-// 		HealthRefill,
-// 		MissileRefill,
-// 		FireSpread,
-// 		FireRate,
-// 		TitleScreen,
-// 		ButtonNormal,
-// 		ButtonSelected,
-// 		ButtonPressed
-// 	};
-// }
 
 namespace Textures{
 	enum ID{
@@ -37,6 +19,15 @@ namespace Textures{
 	};
 };
 
+namespace Shaders{
+	enum ID{
+		BrightnessPass,
+		DownSamplePass,
+		GaussianBlurPass,
+		AddPass,
+	};
+}
+
 
 namespace Fonts{
 	enum ID{
@@ -49,5 +40,6 @@ class ResourceHolder;
 
 typedef ResourceHolder<sf::Texture, Textures::ID> TextureHolder;
 typedef ResourceHolder<sf::Font, Fonts::ID> FontHolder;
+typedef ResourceHolder<sf::Shader, Shaders::ID> ShaderHolder;
 
 #endif
