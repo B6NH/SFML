@@ -7,6 +7,8 @@
 #include "resource_identifiers.h"
 #include "player.h"
 #include "state_stack.h"
+#include "music_player.h"
+#include "sound_player.h"
 
 
 class Application{
@@ -25,6 +27,8 @@ private:
   sf::RenderWindow mWindow;
   TextureHolder mTextures;
   FontHolder mFonts;
+  MusicPlayer mMusic;
+  SoundPlayer mSounds;
   Player mPlayer;
   StateStack mStateStack;
   sf::Text mStatisticsText;

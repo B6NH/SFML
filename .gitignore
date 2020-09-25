@@ -1,4 +1,6 @@
 *.o
 *.png
 *.ttf
+*.ogg
+*.wav
 /sfml-app

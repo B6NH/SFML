@@ -1,32 +1,50 @@
 #include "../Header/pause_state.h"
 #include "../Header/utility.h"
 #include "../Header/resource_holder.h"
+#include "../Header/button.h"
+#include "../Header/music_player.h"
 
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/View.hpp>
 
 
-PauseState::PauseState(StateStack& stack, Context context) :
-  State(stack, context), mBackgroundSprite(), mPausedText(),
-  mInstructionText(){
+PauseState::PauseState(StateStack& stack, Context context)
+: State(stack, context)
+, mBackgroundSprite()
+, mPausedText()
+, mGUIContainer(){
 
-  // Set font from context and get view size
-	sf::Font & font = context.fonts->get(Fonts::Main);
-	sf::Vector2f viewSize = context.window->getView().getSize();
+  sf::Font& font = context.fonts->get(Fonts::Main);
+	sf::Vector2f windowSize(context.window->getSize());
 
-  // Set pause message
 	mPausedText.setFont(font);
 	mPausedText.setString("Game Paused");
 	mPausedText.setCharacterSize(70);
 	centerOrigin(mPausedText);
-	mPausedText.setPosition(0.5f * viewSize.x, 0.4f * viewSize.y);
+	mPausedText.setPosition(0.5f * windowSize.x, 0.4f * windowSize.y);
 
-  // Set instruction message
-	mInstructionText.setFont(font);
-	mInstructionText.setString("(Press Backspace to return to the main menu)");
-	centerOrigin(mInstructionText);
-	mInstructionText.setPosition(0.5f * viewSize.x, 0.6f * viewSize.y);
+	auto returnButton = std::make_shared<GUI::Button>(context);
+	returnButton->setPosition(0.5f * windowSize.x - 100, 0.4f * windowSize.y + 75);
+	returnButton->setText("Return");
+	returnButton->setCallback([this] (){
+		requestStackPop();
+	});
+
+	auto backToMenuButton = std::make_shared<GUI::Button>(context);
+	backToMenuButton->setPosition(0.5f * windowSize.x - 100, 0.4f * windowSize.y + 125);
+	backToMenuButton->setText("Back to menu");
+	backToMenuButton->setCallback([this] ()
+	{
+		requestStateClear();
+		requestStackPush(States::Menu);
+	});
+
+	mGUIContainer.pack(returnButton);
+	mGUIContainer.pack(backToMenuButton);
+
+	getContext().music->setPaused(true);
+
 }
 
 
@@ -40,9 +58,9 @@ void PauseState::draw(){
 	backgroundShape.setFillColor(sf::Color(0, 0, 0, 150));
 	backgroundShape.setSize(window.getView().getSize());
 
-	window.draw(backgroundShape);
+  window.draw(backgroundShape);
 	window.draw(mPausedText);
-	window.draw(mInstructionText);
+	window.draw(mGUIContainer);
 }
 
 // False value prevents updating other states in stack.
@@ -51,21 +69,10 @@ bool PauseState::update(sf::Time){
 }
 
 bool PauseState::handleEvent(const sf::Event& event){
+  mGUIContainer.handleEvent(event);
+  return false;
+}
 
-	if(event.type != sf::Event::KeyPressed){
-    return false;
-  }
-
-  // Go back to game
-	if(event.key.code == sf::Keyboard::Escape){
-		requestStackPop();
-	}
-
-  // Clear stack and return to menu
-	if (event.key.code == sf::Keyboard::BackSpace){
-		requestStateClear();
-		requestStackPush(States::Menu);
-	}
-
-	return false;
+PauseState::~PauseState(){
+	getContext().music->setPaused(false);
 }

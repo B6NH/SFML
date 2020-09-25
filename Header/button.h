@@ -4,7 +4,7 @@
 
 #include "component.h"
 #include "resource_identifiers.h"
-#include "resource_holder.h"
+#include "state.h"
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
@@ -29,7 +29,7 @@ public:
   };
 
 public:
-  Button(const FontHolder &, const TextureHolder &);
+  Button(State::Context context);
   void setCallback(Callback);
   void setText(const std::string &);
   void setToggle(bool flag);
@@ -47,6 +47,7 @@ private:
   sf::Sprite mSprite;
   sf::Text mText;
   bool mIsToggle;
+  SoundPlayer & mSounds;
 };
 
 }

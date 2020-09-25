@@ -32,6 +32,7 @@ class Aircraft : public Entity{
 		void collectMissiles(unsigned int count);
 		void fire();
 		void launchMissile();
+		void playLocalSound(CommandQueue& commands, SoundEffect::ID effect);
 	private:
 		virtual void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 		virtual void updateCurrent(sf::Time dt, CommandQueue& commands);
@@ -53,6 +54,7 @@ class Aircraft : public Entity{
 		bool mIsFiring;
 		bool mIsLaunchingMissile;
 		bool mShowExplosion;
+		bool mPlayedExplosionSound;
 		bool mSpawnedPickup;
 		int mFireRateLevel;
 		int mSpreadLevel;

@@ -1,9 +1,9 @@
 #include "../Header/aircraft.h"
-#include "../Header/category.h"
 #include "../Header/data_tables.h"
 #include "../Header/utility.h"
 #include "../Header/pickup.h"
 #include "../Header/command_queue.h"
+#include "../Header/sound_node.h"
 #include "../Header/resource_holder.h"
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
@@ -26,6 +26,7 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 , mIsFiring(false)
 , mIsLaunchingMissile(false)
 , mShowExplosion(true)
+, mPlayedExplosionSound(false)
 , mSpawnedPickup(false)
 , mFireRateLevel(1)
 , mSpreadLevel(1)
@@ -96,6 +97,15 @@ void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands){
 	if (isDestroyed()){
 		checkPickupDrop(commands);
 		mExplosion.update(dt);
+
+		// Play explosion sound only once
+		if(!mPlayedExplosionSound){
+			SoundEffect::ID soundEffect = (randomInt(2) == 0) ? SoundEffect::Explosion1 : SoundEffect::Explosion2;
+			playLocalSound(commands, soundEffect);
+
+			mPlayedExplosionSound = true;
+		}
+
 		return;
 	}
 
@@ -234,6 +244,7 @@ void Aircraft::checkProjectileLaunch(sf::Time dt, CommandQueue& commands){
 
 	if(mIsFiring && mFireCountdown <= sf::Time::Zero){
 		commands.push(mFireCommand);
+		playLocalSound(commands, isAllied() ? SoundEffect::AlliedGunfire : SoundEffect::EnemyGunfire);
 		mFireCountdown += Table[mType].fireInterval / (mFireRateLevel + 1.f);
 		mIsFiring = false;
 	}else if (mFireCountdown > sf::Time::Zero){
@@ -243,6 +254,7 @@ void Aircraft::checkProjectileLaunch(sf::Time dt, CommandQueue& commands){
 
 	if (mIsLaunchingMissile){
 		commands.push(mMissileCommand);
+		playLocalSound(commands, SoundEffect::LaunchMissile);
 		mIsLaunchingMissile = false;
 	}
 }
@@ -309,4 +321,19 @@ void Aircraft::updateTexts(){
 			mMissileDisplay->setString("M: " + toString(mMissileAmmo));
 		}
 	}
+}
+
+void Aircraft::playLocalSound(CommandQueue& commands, SoundEffect::ID effect){
+
+	sf::Vector2f worldPosition = getWorldPosition();
+
+	Command command;
+	command.category = Category::SoundEffect;
+	command.action = derivedAction<SoundNode>(
+		[effect, worldPosition] (SoundNode& node, sf::Time)
+		{
+			node.playSound(effect, worldPosition);
+		});
+
+	commands.push(command);
 }

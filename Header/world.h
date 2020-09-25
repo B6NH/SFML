@@ -9,6 +9,7 @@
 #include "command_queue.h"
 #include "command.h"
 #include "bloom_effect.h"
+#include "sound_player.h"
 
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Graphics/View.hpp>
@@ -24,7 +25,7 @@ namespace sf{
 
 class World : private sf::NonCopyable{
 	public:
-		explicit World(sf::RenderTarget & outputTarget, FontHolder& fonts);
+		World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sounds);
 		void update(sf::Time dt);
 		void draw();
 		CommandQueue & getCommandQueue();
@@ -41,6 +42,7 @@ class World : private sf::NonCopyable{
 		void spawnEnemies();
 		void destroyEntitiesOutsideView();
 		void guideMissiles();
+		void updateSounds();
 		sf::FloatRect getViewBounds() const;
 		sf::FloatRect	getBattlefieldBounds() const;
 	private:
@@ -71,6 +73,7 @@ class World : private sf::NonCopyable{
 		sf::View mWorldView;
 		TextureHolder mTextures;
 		FontHolder & mFonts;
+		SoundPlayer & mSounds;
 		SceneNode mSceneGraph;
 		std::array<SceneNode*, LayerCount>	mSceneLayers;
 		CommandQueue mCommandQueue;

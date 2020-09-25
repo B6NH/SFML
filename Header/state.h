@@ -12,6 +12,8 @@ namespace sf{
 
 class StateStack;
 class Player;
+class MusicPlayer;
+class SoundPlayer;
 
 
 // State class represents different game states. It contains pointer to
@@ -20,11 +22,14 @@ class State{
 public:
   typedef std::unique_ptr<State> Ptr;
   struct Context{
-    Context(sf::RenderWindow &, TextureHolder &, FontHolder &, Player &);
+		Context(sf::RenderWindow& window, TextureHolder& textures,
+			      FontHolder& fonts, Player& player, MusicPlayer& music, SoundPlayer& sounds);
     sf::RenderWindow * window;
     TextureHolder * textures;
     FontHolder * fonts;
     Player * player;
+		MusicPlayer * music;
+		SoundPlayer * sounds;
   };
 public:
   State(StateStack &, Context);

@@ -21,7 +21,7 @@ State(stack, context), mGUIContainer(){
 
 	updateLabels();
 
-	auto backButton = std::make_shared<GUI::Button>(*context.fonts, *context.textures);
+	auto backButton = std::make_shared<GUI::Button>(context);
 
 	backButton->setPosition(400.f, 300.f);
 	backButton->setText("Back");
@@ -79,7 +79,8 @@ void SettingsState::updateLabels(){
 
 // Create button for action.
 void SettingsState::addButtonLabel(Player::Action action, float y, const std::string & text, Context context){
-	mBindingButtons[action] = std::make_shared<GUI::Button>(*context.fonts, *context.textures);
+
+	mBindingButtons[action] = std::make_shared<GUI::Button>(context);
 	mBindingButtons[action]->setPosition(80.f, y);
 	mBindingButtons[action]->setText(text);
 

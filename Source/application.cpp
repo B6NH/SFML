@@ -16,10 +16,19 @@ const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
 // Application is main game class. It contains game window, resource holders
 // with textures and fonts, state stack holding game states, player object and
 // statistic variables
-Application::Application() :
-  mWindow(sf::VideoMode(1024, 768), "Gameplay", sf::Style::Close), mTextures(), mFonts(),
-  mPlayer(), mStateStack(State::Context(mWindow, mTextures, mFonts, mPlayer)),
-  mStatisticsText(), mStatisticsUpdateTime(), mStatisticsNumFrames(0){
+Application::Application()
+: mWindow(sf::VideoMode(1024, 768), "Gameplay", sf::Style::Close)
+, mTextures()
+, mFonts()
+, mPlayer()
+, mMusic()
+, mSounds()
+, mStateStack(State::Context(mWindow, mTextures, mFonts, mPlayer, mMusic, mSounds))
+, mStatisticsText()
+, mStatisticsUpdateTime()
+, mStatisticsNumFrames(0){
+
+	mMusic.setVolume(10);
 
   // Disable automatic key repeat
 	mWindow.setKeyRepeatEnabled(false);

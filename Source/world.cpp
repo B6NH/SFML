@@ -1,21 +1,21 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
-#include "../Header/sprite_node.h"
 #include "../Header/world.h"
 #include "../Header/projectile.h"
 #include "../Header/pickup.h"
 #include "../Header/text_node.h"
+#include "../Header/sound_node.h"
 #include "../Header/particle_node.h"
-#include "../Header/post_effect.h"
 #include <SFML/Graphics/RenderTarget.hpp>
 
 // Initialize world object.
-World::World(sf::RenderTarget & outputTarget, FontHolder & fonts)
+World::World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sounds)
 : mTarget(outputTarget)
 , mSceneTexture()
 , mWorldView(outputTarget.getDefaultView())
 , mFonts(fonts)
+, mSounds(sounds)
 , mTextures()
 , mSceneGraph()
 , mSceneLayers()
@@ -84,6 +84,10 @@ void World::buildScene(){
 	// Add propellant particle node to the scene
 	std::unique_ptr<ParticleNode> propellantNode(new ParticleNode(Particle::Propellant, mTextures));
 	mSceneLayers[LowerAir]->attachChild(std::move(propellantNode));
+
+	// Add sound effect node
+	std::unique_ptr<SoundNode> soundNode(new SoundNode(mSounds));
+	mSceneGraph.attachChild(std::move(soundNode));
 
 	// Add player's aircraft
 	std::unique_ptr<Aircraft> player(new Aircraft(Aircraft::Eagle, mTextures, mFonts));
@@ -213,6 +217,8 @@ void World::update(sf::Time dt){
 
   // Dont let player move outside view bounds
 	adaptPlayerPosition();
+
+	updateSounds();
 }
 
 CommandQueue & World::getCommandQueue(){
@@ -282,6 +288,7 @@ void World::handleCollisions(){
 			auto& pickup = static_cast<Pickup&>(*pair.second);
 			pickup.apply(player);
 			pickup.destroy();
+			player.playLocalSound(mCommandQueue, SoundEffect::CollectPickup);
 
 		}else if (matchesCategories(pair, Category::EnemyAircraft, Category::AlliedProjectile)
 			  || matchesCategories(pair, Category::PlayerAircraft, Category::EnemyProjectile)){
@@ -363,4 +370,14 @@ bool World::hasAlivePlayer() const{
 
 bool World::hasPlayerReachedEnd() const{
 	return !mWorldBounds.contains(mPlayerAircraft->getPosition());
+}
+
+void World::updateSounds(){
+
+	// Set listener's position to player position
+	mSounds.setListenerPosition(mPlayerAircraft->getWorldPosition());
+
+	// Remove unused sounds
+	mSounds.removeStoppedSounds();
+
 }

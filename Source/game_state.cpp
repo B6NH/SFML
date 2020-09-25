@@ -1,11 +1,18 @@
 #include "../Header/game_state.h"
+#include "../Header/music_player.h"
+
+#include <SFML/Graphics/RenderWindow.hpp>
 
 
-// Call base constructor, initialize mWorld and mPlayer with render window and
-// player variables from context.
-GameState::GameState(StateStack& stack, Context context) :
-  State(stack, context), mWorld(*context.window, *context.fonts), mPlayer(*context.player){
-    //
+// Call base constructor, initialize mWorld and mPlayer with variables from context.
+GameState::GameState(StateStack& stack, Context context)
+: State(stack, context)
+, mWorld(*context.window, *context.fonts, *context.sounds)
+, mPlayer(*context.player){
+
+	mPlayer.setMissionStatus(Player::MissionRunning);
+
+	context.music->play(Music::MissionTheme);
 }
 
 // Draw whole world
