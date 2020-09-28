@@ -4,6 +4,7 @@
 #include "../Header/state_identifiers.h"
 #include "../Header/title_state.h"
 #include "../Header/game_state.h"
+#include "../Header/multiplayer_game_state.h"
 #include "../Header/menu_state.h"
 #include "../Header/pause_state.h"
 #include "../Header/settings_state.h"
@@ -17,13 +18,14 @@ const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
 // with textures and fonts, state stack holding game states, player object and
 // statistic variables
 Application::Application()
-: mWindow(sf::VideoMode(1024, 768), "Gameplay", sf::Style::Close)
+: mWindow(sf::VideoMode(1024, 768), "Network", sf::Style::Close)
 , mTextures()
 , mFonts()
-, mPlayer()
 , mMusic()
 , mSounds()
-, mStateStack(State::Context(mWindow, mTextures, mFonts, mPlayer, mMusic, mSounds))
+, mKeyBinding1(1)
+, mKeyBinding2(2)
+, mStateStack(State::Context(mWindow, mTextures, mFonts, mMusic, mSounds, mKeyBinding1, mKeyBinding2))
 , mStatisticsText()
 , mStatisticsUpdateTime()
 , mStatisticsNumFrames(0){
@@ -33,6 +35,9 @@ Application::Application()
   // Disable automatic key repeat
 	mWindow.setKeyRepeatEnabled(false);
   mWindow.setFramerateLimit(60);
+
+	// Vsync ???
+	mWindow.setVerticalSyncEnabled(true);
 
   // Load fonts and textures
   mFonts.load(Fonts::Main, 	"Media/Sansation.ttf");
@@ -140,7 +145,11 @@ void Application::registerStates(){
 	mStateStack.registerState<TitleState>(States::Title);
 	mStateStack.registerState<MenuState>(States::Menu);
 	mStateStack.registerState<GameState>(States::Game);
+	mStateStack.registerState<MultiplayerGameState>(States::HostGame, true);
+	mStateStack.registerState<MultiplayerGameState>(States::JoinGame, false);
 	mStateStack.registerState<PauseState>(States::Pause);
+	mStateStack.registerState<PauseState>(States::NetworkPause, true);
   mStateStack.registerState<SettingsState>(States::Settings);
-  mStateStack.registerState<GameOverState>(States::GameOver);
+	mStateStack.registerState<GameOverState>(States::GameOver, "Mission Failed!");
+	mStateStack.registerState<GameOverState>(States::MissionSuccess, "Mission Successful!");
 }

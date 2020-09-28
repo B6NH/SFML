@@ -28,8 +28,12 @@ public:
   };
 public:
   explicit StateStack(State::Context);
+
   template<typename T>
   void registerState(States::ID);
+	template <typename T, typename Param1>
+	void registerState(States::ID stateID, Param1 arg1);
+
   void update(sf::Time);
   void draw();
   void handleEvent(const sf::Event &);
@@ -54,7 +58,7 @@ private:
 	// Changes that will be applied during stack update
   std::vector<PendingChange> mPendingList;
 
-	
+
   State::Context mContext;
   std::map<States::ID,std::function<State::Ptr()>> mFactories;
 };
@@ -66,6 +70,14 @@ template <typename T>
 void StateStack::registerState(States::ID stateID){
 	mFactories[stateID] = [this] (){
 		return State::Ptr(new T(*this, mContext));
+	};
+}
+
+
+template <typename T, typename Param1>
+void StateStack::registerState(States::ID stateID, Param1 arg1){
+	mFactories[stateID] = [this, arg1] (){
+		return State::Ptr(new T(*this, mContext, arg1));
 	};
 }
 

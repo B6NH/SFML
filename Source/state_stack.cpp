@@ -1,22 +1,29 @@
 #include <cassert>
-#include "../Header/state.h"
+// #include "../Header/state.h"
 #include "../Header/state_stack.h"
 
 #include <iostream>
 
-StateStack::StateStack(State::Context context) :
-  mStack(), mPendingList(), mContext(context), mFactories(){
+StateStack::StateStack(State::Context context)
+: mStack()
+, mPendingList()
+, mContext(context)
+, mFactories(){
     //
 }
 
 // Update states starting from end of vector.
 // Stop updating next states if response is false.
 void StateStack::update(sf::Time dt){
+
 	for (auto itr = mStack.rbegin(); itr != mStack.rend(); ++itr){
+
 		if (!(*itr)->update(dt)){
       break;
     }
+
 	}
+
 	applyPendingChanges();
 }
 
@@ -81,10 +88,19 @@ void StateStack::applyPendingChanges(){
 				break;
 
 			case Pop:
-				mStack.pop_back();
+        mStack.back()->onDestroy();
+        mStack.pop_back();
+        if(!mStack.empty()){
+          mStack.back()->onActivate();
+        }
 				break;
 
 			case Clear:
+
+        for(State::Ptr & state : mStack){
+					state->onDestroy();
+        }
+
 				mStack.clear();
 				break;
 		}

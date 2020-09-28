@@ -11,9 +11,9 @@ namespace sf{
 }
 
 class StateStack;
-class Player;
 class MusicPlayer;
 class SoundPlayer;
+class KeyBinding;
 
 
 // State class represents different game states. It contains pointer to
@@ -22,14 +22,15 @@ class State{
 public:
   typedef std::unique_ptr<State> Ptr;
   struct Context{
-		Context(sf::RenderWindow& window, TextureHolder& textures,
-			      FontHolder& fonts, Player& player, MusicPlayer& music, SoundPlayer& sounds);
+		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts,
+			MusicPlayer& music, SoundPlayer& sounds, KeyBinding& keys1, KeyBinding& keys2);
     sf::RenderWindow * window;
     TextureHolder * textures;
     FontHolder * fonts;
-    Player * player;
 		MusicPlayer * music;
 		SoundPlayer * sounds;
+		KeyBinding * keys1;
+		KeyBinding * keys2;
   };
 public:
   State(StateStack &, Context);
@@ -37,6 +38,8 @@ public:
   virtual void draw() = 0;
   virtual bool update(sf::Time) = 0;
   virtual bool handleEvent(const sf::Event &) = 0;
+	virtual void onActivate();
+	virtual void onDestroy();
 protected:
   void requestStackPush(States::ID);
   void requestStackPop();
