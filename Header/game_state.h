@@ -8,13 +8,13 @@
 
 class GameState : public State{
   public:
-    GameState(StateStack &, Context);
+    GameState(StateStack &, Context context);
     virtual void draw();
-		virtual bool update(sf::Time);
-		virtual bool handleEvent(const sf::Event &);
+		virtual bool update(sf::Time dt);
+		virtual bool handleEvent(const sf::Event & event);
 	private:
 		World mWorld;
-		Player & mPlayer;
+		Player mPlayer;
 };
 
 #endif

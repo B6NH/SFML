@@ -8,7 +8,7 @@
 
 class PauseState : public State{
 	public:
-    PauseState(StateStack &, Context);
+    PauseState(StateStack & stack, Context context, bool letUpdatesThrough = false);
 		~PauseState();
 		virtual void draw();
 		virtual bool update(sf::Time);
@@ -17,6 +17,7 @@ class PauseState : public State{
 		sf::Sprite mBackgroundSprite;
 		sf::Text mPausedText;
 		GUI::Container mGUIContainer;
+		bool mLetUpdatesThrough;
 };
 
 

@@ -233,7 +233,7 @@ bool MultiplayerGameState::update(sf::Time dt){
 void MultiplayerGameState::disableAllRealtimeActions(){
 	mActiveState = false;
 
-	for(sf::Int32 identifier, mLocalPlayerIdentifiers){
+	for(sf::Int32 identifier : mLocalPlayerIdentifiers){
 		mPlayers[identifier]->disableAllRealtimeActions();
 	}
 

@@ -414,7 +414,7 @@ void GameServer::informWorldState(sf::TcpSocket& socket){
 
 	for (std::size_t i = 0; i < mConnectedPlayers; ++i){
 		if (mPeers[i]->ready){
-			for(sf::Int32 identifier, mPeers[i]->aircraftIdentifiers){
+			for(sf::Int32 identifier : mPeers[i]->aircraftIdentifiers){
 				packet << identifier << mAircraftInfo[identifier].position.x << mAircraftInfo[identifier].position.y << mAircraftInfo[identifier].hitpoints << mAircraftInfo[identifier].missileAmmo;
 			}
 
@@ -437,7 +437,7 @@ void GameServer::broadcastMessage(const std::string& message){
 }
 
 void GameServer::sendToAll(sf::Packet& packet){
-	for(PeerPtr& peer, mPeers){
+	for(PeerPtr& peer : mPeers){
 		if (peer->ready){
 			peer->socket.send(packet);
 		}

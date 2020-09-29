@@ -8,8 +8,10 @@
 #include "aircraft.h"
 #include "command_queue.h"
 #include "command.h"
+#include "pickup.h"
 #include "bloom_effect.h"
 #include "sound_player.h"
+#include "network_protocol.h"
 
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Graphics/View.hpp>
@@ -23,14 +25,29 @@ namespace sf{
 	class RenderTarget;
 }
 
+class NetworkNode;
+
 class World : private sf::NonCopyable{
 	public:
-		World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sounds);
+		World(sf::RenderTarget& outputTarget, FontHolder& fonts, SoundPlayer& sounds, bool networked = false);
 		void update(sf::Time dt);
 		void draw();
+		sf::FloatRect getViewBounds() const;
 		CommandQueue & getCommandQueue();
+		Aircraft * addAircraft(int identifier);
+		void removeAircraft(int identifier);
+		void setCurrentBattleFieldPosition(float lineY);
+		void setWorldHeight(float height);
+		void addEnemy(Aircraft::Type type, float relX, float relY);
+		void sortEnemies();
 		bool hasAlivePlayer() const;
 		bool hasPlayerReachedEnd() const;
+		void setWorldScrollCompensation(float compensation);
+		Aircraft * getAircraft(int identifier) const;
+		sf::FloatRect getBattlefieldBounds() const;
+		void createPickup(sf::Vector2f position, Pickup::Type type);
+		bool pollGameAction(GameActions::Action& out);
+
 	private:
 		void loadTextures();
 		void adaptPlayerPosition();
@@ -38,13 +55,11 @@ class World : private sf::NonCopyable{
 		void handleCollisions();
 		void buildScene();
 		void addEnemies();
-		void addEnemy(Aircraft::Type type, float relX, float relY);
 		void spawnEnemies();
 		void destroyEntitiesOutsideView();
 		void guideMissiles();
 		void updateSounds();
-		sf::FloatRect getViewBounds() const;
-		sf::FloatRect	getBattlefieldBounds() const;
+
 	private:
 		enum Layer{
 			Background,
@@ -68,6 +83,7 @@ class World : private sf::NonCopyable{
 
 
 	private:
+
 		sf::RenderTarget & mTarget;
 		sf::RenderTexture mSceneTexture;
 		sf::View mWorldView;
@@ -75,15 +91,19 @@ class World : private sf::NonCopyable{
 		FontHolder & mFonts;
 		SoundPlayer & mSounds;
 		SceneNode mSceneGraph;
-		std::array<SceneNode*, LayerCount>	mSceneLayers;
+		std::array<SceneNode*, LayerCount> mSceneLayers;
 		CommandQueue mCommandQueue;
 		sf::FloatRect mWorldBounds;
 		sf::Vector2f mSpawnPosition;
 		float mScrollSpeed;
-		Aircraft * mPlayerAircraft;
+		float mScrollSpeedCompensation;
+		std::vector<Aircraft*> mPlayerAircrafts;
 		std::vector<SpawnPoint> mEnemySpawnPoints;
 		std::vector<Aircraft*> mActiveEnemies;
 		BloomEffect mBloomEffect;
+		bool mNetworkedWorld;
+		NetworkNode * mNetworkNode;
+		SpriteNode * mFinishSprite;
 };
 
 

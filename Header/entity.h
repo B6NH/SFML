@@ -3,29 +3,34 @@
 
 
 #include "scene_node.h"
-#include "command_queue.h"
 
 class Entity : public SceneNode{
-private:
-  sf::Vector2f mVelocity;
-  int mHitpoints;
-public:
+	
+	public:
+		explicit Entity(int hitpoints);
 
-  explicit Entity(int);
-  void repair(int);
-  void damage(int);
-  void destroy();
-  virtual void remove();
-  int getHitpoints() const;
-  bool isDestroyed() const;
+		void setVelocity(sf::Vector2f velocity);
+		void setVelocity(float vx, float vy);
+		void accelerate(sf::Vector2f velocity);
+		void accelerate(float vx, float vy);
+		sf::Vector2f getVelocity() const;
 
-  void setVelocity(sf::Vector2f);
-  void setVelocity(float, float);
-  sf::Vector2f getVelocity() const;
-  void accelerate(sf::Vector2f velocity);
-  void accelerate(float vx, float vy);
-protected:
-  virtual void updateCurrent(sf::Time dt, CommandQueue& commands);
+		int getHitpoints() const;
+		void setHitpoints(int points);
+		void repair(int points);
+		void damage(int points);
+		void destroy();
+		virtual void remove();
+		virtual bool isDestroyed() const;
+
+
+	protected:
+		virtual void updateCurrent(sf::Time dt, CommandQueue& commands);
+
+
+	private:
+		sf::Vector2f mVelocity;
+		int mHitpoints;
 };
 
 #endif

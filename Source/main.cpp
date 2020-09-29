@@ -4,7 +4,7 @@
 #include <iostream>
 
 // g++ -c Source/*.cpp
-// g++ *.o -o sfml-app -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+// g++ *.o -o sfml-app -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
 
 int main(){
 

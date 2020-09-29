@@ -1,61 +1,82 @@
 #include "../Header/entity.h"
+
 #include <cassert>
 
 
-Entity::Entity(int hitpoints) :
-  mVelocity(), mHitpoints(hitpoints){
-    //
+Entity::Entity(int hitpoints)
+: mVelocity()
+, mHitpoints(hitpoints)
+{
 }
 
-void Entity::setVelocity(sf::Vector2f velocity){
-  mVelocity = velocity;
+void Entity::setVelocity(sf::Vector2f velocity)
+{
+	mVelocity = velocity;
 }
 
-void Entity::setVelocity(float vx, float vy){
-  mVelocity.x = vx;
-  mVelocity.y = vy;
+void Entity::setVelocity(float vx, float vy)
+{
+	mVelocity.x = vx;
+	mVelocity.y = vy;
 }
 
-sf::Vector2f Entity::getVelocity() const{
-  return mVelocity;
+sf::Vector2f Entity::getVelocity() const
+{
+	return mVelocity;
 }
 
-void Entity::updateCurrent(sf::Time dt, CommandQueue&){
-  move(mVelocity * dt.asSeconds());
-}
-
-void Entity::accelerate(sf::Vector2f velocity){
+void Entity::accelerate(sf::Vector2f velocity)
+{
 	mVelocity += velocity;
 }
 
-void Entity::accelerate(float vx, float vy){
+void Entity::accelerate(float vx, float vy)
+{
 	mVelocity.x += vx;
 	mVelocity.y += vy;
 }
 
+int Entity::getHitpoints() const
+{
+	return mHitpoints;
+}
 
-void Entity::repair(int points){
+void Entity::setHitpoints(int points)
+{
 	assert(points > 0);
+	mHitpoints = points;
+}
+
+void Entity::repair(int points)
+{
+	assert(points > 0);
+
 	mHitpoints += points;
 }
 
-void Entity::damage(int points){
+void Entity::damage(int points)
+{
 	assert(points > 0);
+
 	mHitpoints -= points;
 }
 
-void Entity::destroy(){
+void Entity::destroy()
+{
 	mHitpoints = 0;
 }
 
-void Entity::remove(){
+void Entity::remove()
+{
 	destroy();
 }
 
-int Entity::getHitpoints() const{
-  return mHitpoints;
+bool Entity::isDestroyed() const
+{
+	return mHitpoints <= 0;
 }
 
-bool Entity::isDestroyed() const{
-  return 0 >= mHitpoints;
+void Entity::updateCurrent(sf::Time dt, CommandQueue&)
+{
+	move(mVelocity * dt.asSeconds());
 }

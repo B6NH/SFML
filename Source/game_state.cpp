@@ -7,8 +7,10 @@
 // Call base constructor, initialize mWorld and mPlayer with variables from context.
 GameState::GameState(StateStack& stack, Context context)
 : State(stack, context)
-, mWorld(*context.window, *context.fonts, *context.sounds)
-, mPlayer(*context.player){
+, mWorld(*context.window, *context.fonts, *context.sounds, false)
+, mPlayer(nullptr, 1, context.keys1){
+
+	mWorld.addAircraft(1);
 
 	mPlayer.setMissionStatus(Player::MissionRunning);
 
@@ -30,7 +32,7 @@ bool GameState::update(sf::Time dt){
 		requestStackPush(States::GameOver);
 	}else if(mWorld.hasPlayerReachedEnd()){
 		mPlayer.setMissionStatus(Player::MissionSuccess);
-		requestStackPush(States::GameOver);
+		requestStackPush(States::MissionSuccess);
 	}
 
 	CommandQueue& commands = mWorld.getCommandQueue();
