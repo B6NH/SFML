@@ -30,8 +30,6 @@ Application::Application()
 , mStatisticsUpdateTime()
 , mStatisticsNumFrames(0){
 
-	mMusic.setVolume(10);
-
   // Disable automatic key repeat
 	mWindow.setKeyRepeatEnabled(false);
   mWindow.setFramerateLimit(60);
@@ -56,6 +54,8 @@ Application::Application()
 
   // Push pending change to pending list vector.
 	mStateStack.pushState(States::Title);
+
+	mMusic.setVolume(10);
 }
 
 void Application::run(){
