@@ -1,3 +1,3 @@
 # SFML
 
-SFML Game
+Game from "SFML Game Development" book
